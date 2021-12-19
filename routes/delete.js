@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const userCont = require('../controller/user');
+const userCont = require('./controllers/user');
 
 router.delete('/user/:id', userCont.remove);
 

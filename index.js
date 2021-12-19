@@ -1,22 +1,20 @@
 const env = require('./utils/env');
 const express = require('express');
 require('express-async-errors');
-const app = express();
 const port = env.APP_PORT || 3333;
+const load = require('./loaders/load');
 
-const router = require('./routes/router');
-const errorHandler = require('./middlewares/error');
+async function startServer(){
+  try{
+    const app = express();
+    await load(app);
+    app.listen(port);
+    console.log(`App listening at http://localhost:${port}`);
+  } catch(err){
+    console.log('Error while initializing server!');
+    console.dir(err);
+  }
+}
 
-app.use(express.json()); //parse application/json body
+startServer();
 
-app.use(router); //setting all routes
-
-app.use((req, res)=>{
-  res.status(404).send('Nothing Found');
-});
-
-app.use(errorHandler); //Custom Error Handler
-
-app.listen(port, () => { //Starting server
-  console.log(`App listening at http://localhost:${port}`)
-});

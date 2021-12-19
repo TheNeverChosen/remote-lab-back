@@ -7,5 +7,6 @@ module.exports = {
   MONGO_PASS: penv.MONGO_PASS,
   MONGO_NAME: penv.MONGO_NAME,
   REDIS_PASS: penv.REDIS_PASS,
+  SESSION_SECRET: penv.SESSION_SECRET,
   APP_PORT: penv.APP_PORT
 };
