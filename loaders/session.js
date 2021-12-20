@@ -10,7 +10,7 @@ const sessionConfig = {
   cookie:{
     secure: false, // if true only transmit cookie over https
     httpOnly: false, // if true prevent client side JS from reading the cookie 
-    maxAge: 1000 * 10 // session max age in miliseconds
+    maxAge: env.SESSION_MAX_AGE // session max age in miliseconds
   }
 };
 

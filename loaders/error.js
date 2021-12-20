@@ -2,12 +2,10 @@ const {mongoose} = require('./mongo');
 const createError = require('http-errors');
 
 function errorNotFound(req, res, next){
-  console.log('not found ');
   return next(createError(404, 'Nothing found'));
 }
 
-function errorMongoHandler(err, req, res, next){
-  console.log('mongo handler');
+function errorMongo(err, req, res, next){
   if(err instanceof mongoose.Error){
     if(err instanceof mongoose.Error.ValidationError)
       return next(createError(400, err.message));
@@ -20,8 +18,7 @@ function errorMongoHandler(err, req, res, next){
   return next(err);
 }
 
-function errorHttpHandler(err, req, res, next){
-  console.log('http handler');
+function errorHandler(err, req, res, next){
   if(createError.isHttpError(err))
     res.status(err.status).json({message: err.message});
   else{
@@ -30,4 +27,4 @@ function errorHttpHandler(err, req, res, next){
   }
 }
 
-module.exports = {errorHttpHandler, errorMongoHandler, errorNotFound};
+module.exports = {errorHandler, errorMongo, errorNotFound};

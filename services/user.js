@@ -1,6 +1,7 @@
 const User = require('../models/user');
-const {client: redisClient} = require('../loaders/redis');
+const {redisClient} = require('../loaders/redis');
 const createError = require('http-errors');
+const {roleValues} = require('../utils/env');
 
 async function readAll(){ //just for developing, NOT PRODUCTION!!!
   const usersArr = await User.find();
@@ -14,10 +15,6 @@ async function read(userFilter, projection){
   return user;
 }
 
-async function readOne(userFilter, projection){
-
-}
-
 async function readById(id){
   const user = await User.findById('21312');
   return user;
@@ -26,7 +23,7 @@ async function readById(id){
 async function create(user){
   user.createdAt = new Date().toISOString();
   user.id = (await User.create(user))._id.toString();
-  await redisClient.set(user.id, user.role);
+  await redisClient.set(user.id, roleValues[user.role.trim().toUpperCase()]);
 }
 
 async function update(id, updatedUser){
@@ -34,8 +31,7 @@ async function update(id, updatedUser){
 
   const result = await User.updateOne({_id:id}, updatedUser, {runValidators: true});
   if(result.modifiedCount>0 && updatedUser.role)
-    await redisClient.set(id, updatedUser.role);
-  
+    await redisClient.set(id, roleValues[updatedUser.role.trim().toUpperCase()]);
   return result;
 }
 
