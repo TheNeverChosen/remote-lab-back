@@ -14,7 +14,7 @@ User sessions are stored server-side, using [express-session](https://github.com
 Authenticates users to the system and sets a client-side session cookie. The user must login with their **username/email** (loginId) and **password**.
 
 - **Route:** `/auth/login`
-- **Method:** POST
+- **Method:** `POST`
 
 **Payload Example:**
 
@@ -30,7 +30,7 @@ Authenticates users to the system and sets a client-side session cookie. The use
 Logs out the user out of the system and removes the client-side session cookie.
 
 - **Route:** `/auth/logout`
-- **Method:** GET
+- **Method:** `GET`
 
 
 ## **User**
@@ -42,7 +42,7 @@ User routes handle work related to user data manipulation.
 Creates new user.
 
 - **Route:** `/user`
-- **Method:** POST
+- **Method:** `POST`
 
 **Payload Example:**
 
@@ -61,7 +61,7 @@ Creates new user.
 Return all users.
 
 - **Route:** `/user`
-- **Method:** GET
+- **Method:** `GET`
 
 
 ### **Show One User**
@@ -69,14 +69,14 @@ Return all users.
 Return one user by ID.
 
 - **Route:** `/user/:id`
-- **Method:** GET
+- **Method:** `GET`
 
 ### **Update One User**
 
 Update user data by ID. All data can be updated with the exception of user ID and creation date.
 
 - **Route:** `/user/:id`
-- **Method:** PUT
+- **Method:** `PUT`
 
 **Payload Example:**
 
