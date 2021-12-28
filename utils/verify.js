@@ -1,3 +1,6 @@
+const {roles} = require('./env');
+
+
 //regexr.com/3cg7r (Instagram username - 1->30 characters long)
 const usernameReg = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/i;
 
@@ -7,7 +10,7 @@ const emailReg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+
 //regexr.com/3bfsi (Password Validation - 8->72 characters long)
 const passReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,72}$/;
 
-const mongoose = require('../loaders/mongo');
+const {mongoose} = require('../loaders/mongo');
 
 function isUsername(username){
   if(typeof username != "string") return false;
@@ -31,4 +34,10 @@ function isObjectId(id){
   return mongoose.isValidObjectId(id);
 }
 
-module.exports={isUsername, isEmail, usernameOrEmail, isObjectId, emailReg, usernameReg, passReg};
+function roleToNumber(role){
+  if(typeof role == 'string') role = roles.indexOf(role.trim().toUpperCase());
+  if(typeof role != 'number' || role<0 || role>=roles.length) return undefined;
+  return role;
+}
+
+module.exports={isUsername, isEmail, usernameOrEmail, isObjectId, emailReg, usernameReg, passReg, roleToNumber};

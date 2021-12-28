@@ -1,3 +1,4 @@
+const {roles} = require('../utils/env');
 const {mongoose} = require('../loaders/mongo');
 const {Schema} = mongoose;
 const {usernameReg, emailReg, passReg} = require('../utils/verify');
@@ -46,7 +47,7 @@ const userSchema = new Schema({
     trim: true,
     uppercase: true,
     enum: {
-      values: ['MASTER', 'ADMIN', 'USER'],
+      values: roles,
       message: '{VALUE} is not a valid role'
     },
     required: [true, 'User role is required']
@@ -54,7 +55,7 @@ const userSchema = new Schema({
   createdAt:{
     type: Date,
     required: [true, 'User creation date is required']
-  }
-});
+  },
+}, {versionKey: false});
 
 module.exports = mongoose.model('user', userSchema);

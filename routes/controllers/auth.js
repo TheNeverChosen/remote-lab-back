@@ -1,54 +1,40 @@
-const {roleValues} = require('../../utils/env');
-const authSrv = require('../../services/auth');
-const createErrror = require('http-errors');
 const createError = require('http-errors');
-const {redisClient} = require('../../loaders/redis');
+const authSrv = require('../../services/auth');
+const {env} = require('../../utils/env');
 
-function isAuth(session){
-  return session && session.userId ? true : false;
+function checkAuthPermission(reqRole){
+  return (async (req, res, next)=>{
+    const result = await authSrv.checkAuthPermission(req.session, reqRole),
+      resTypes = authSrv.authPermTypes;
+    switch(result){
+      case resTypes.NO_SESSION: return next(createError(401, 'Unauthorized: no session ongoing'));
+      case resTypes.INSUFFICIENT: return next(createError(403, 'Forbidden: insufficient permission'));
+      default: return next();
+    }
+  });
 }
 
 function checkNotAuth(req, res, next){
-  if(!isAuth(req.session)) return next();
-  return next(createError(403, 'Forbidden Login: session ongoing'));
-}
-
-function checkAuth(req, res, next){
-  if(isAuth(req.session)) return next();
-  return next(createErrror(401, 'Unauthorized: no session ongoing'));
-}
-
-function checkAuthRole(requiredRole){
-  requiredRole = roleValues[requiredRole.trim().toUpperCase()];
-  const setReqRole = (req, res, next) => {res.locals.reqRole = requiredRole; return next();};
-  const checkRole = async (req, res, next) => {
-    const session = req.session;
-    if(!isAuth(session)) return next(createErrror(401, 'Unauthorized: no session ongoing'));
-    console.log(session.userId)
-    const {reqRole} = res.locals, userRole = await redisClient.get('61bf79fec71c6a6ebddf942c');
-    console.log(reqRole + ' (req) < (user) ' + userRole + ' // '+await redisClient.keys('*'));
-    if(reqRole < userRole) return next(createError(403, 'Forbidden: insufficient permission'));
-    return next();
-  }
-
-  return [setReqRole, checkRole];
+  if(authSrv.isAuth(req.session)) throw createError(403, 'Forbidden: session ongoing');
+  return next();
 }
 
 async function login(req, res){
-  const sess = req.session;
-  if(sess.userId) throw createError(403, 'Forbidden Login: session ongoing');
-  const user = await authSrv.checkLogin(req.body);
-  if(!user) throw createErrror(401, 'Wrong login credentials');
-  sess.userId = user._id.toString();
+  if(authSrv.isAuth(req.session)) throw createError(403, 'Forbidden Login: session ongoing');
+
+  const user = await authSrv.matchCredentials(req.body);
+  if(!user) throw createError(401, 'Wrong login credentials');
+
+  req.session.userId = user._id.toString();
   res.status(200).end();
 }
 
 async function logout(req, res){
-  const sess = req.session;
-  sess.destroy(err=>{
+  req.session.destroy(err=>{
     if(err) throw err;
+    res.clearCookie(env.SESSION_NAME);
     res.status(200).end();
   });
 }
 
-module.exports = {checkAuth, checkNotAuth, checkAuthRole, login, logout};
+module.exports = {checkNotAuth, checkAuthPermission, login, logout};

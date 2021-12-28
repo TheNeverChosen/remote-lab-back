@@ -1,4 +1,4 @@
-const env = require('./utils/env');
+const {env} = require('./utils/env');
 const express = require('express');
 require('express-async-errors');
 const port = env.APP_PORT || 3333;

@@ -1,9 +1,10 @@
-const env = require('../utils/env');
+const {env} = require('../utils/env');
 const session = require('express-session');
 const connectRedis = require('connect-redis');
 const RedisStore = connectRedis(session);
 
 const sessionConfig = {
+  name: env.SESSION_NAME,
   secret: env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,

@@ -8,7 +8,7 @@ async function readAll(req, res){
 
 async function readById(req, res){
   const id = req.params.id;
-  const user = await userSrv.read(id);
+  const user = await userSrv.readById(id);
   if(!user) throw createError(404, 'User not found');
   res.status(200).json(user);
 }
@@ -20,7 +20,7 @@ async function create(req, res){
 
 async function update(req, res){
   const id = req.params.id, user = req.body;
-  const result = await userSrv.update(id, user);
+  const result = await userSrv.updateById(id, user);
 
   if(!result.acknowledged) throw createError(500, 'Error while updating user');
   if(result.matchedCount<1) throw createError(404, 'User not found');
@@ -29,7 +29,8 @@ async function update(req, res){
 }
 
 async function remove(req, res){
-  await userSrv.remove(req.params.id);
+  const delCount = await userSrv.removeById(req.params.id);
+  if(delCount<1) throw createError(404, 'User not found');
   res.status(200).end();
 }
 

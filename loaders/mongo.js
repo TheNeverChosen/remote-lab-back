@@ -1,4 +1,4 @@
-const env = require('../utils/env');
+const {env} = require('../utils/env');
 const mongoose = require('mongoose');
 const url = `mongodb+srv://${env.MONGO_USER}:${env.MONGO_PASS}@cluster0.fqmgp.mongodb.net/${env.MONGO_NAME}`;
 
