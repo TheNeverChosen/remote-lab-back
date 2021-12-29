@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const verify = require('../utils/verify');
+const createError = require('http-errors');
 const authPermTypes = {
   NO_SESSION: -1,
   INSUFFICIENT: 0,
