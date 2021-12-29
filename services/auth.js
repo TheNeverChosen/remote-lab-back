@@ -23,7 +23,13 @@ async function checkAuthPermission(session, reqRole){
 }
 
 async function matchCredentials(payload){
+  console.log(`Login Payload received:`);
+  console.log(payload);
+  if(typeof payload.loginId != 'string') throw createError(400, 'Bad loginId');
+  if(typeof payload.password != 'string') throw createError(400, 'Bad password');
+
   const loginId = payload.loginId.trim(), {password} = payload;
+
   if(verify.isUsername(loginId)) return await User.findOne({username:loginId.trim(), password}, '_id');
   else if(verify.isEmail(loginId)) return await User.findOne({email:loginId.trim(), password}, '_id');
 }

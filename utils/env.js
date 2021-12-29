@@ -14,5 +14,13 @@ module.exports = {
     APP_PORT: penv.APP_PORT,
     NODE_ENV: penv.NODE_ENV
   },
-  roles: ['MASTER', 'ADMIN', 'USER']
+  roles: ['MASTER', 'ADMIN', 'USER'],
+  deviceModels: {
+    inputDg: ['GENERIC'],
+    inputAl: ['GENERIC'],
+    outputDg: ['GENERIC'],
+    outputAl: []
+  }
 };
+
+//substituir deviceModels por full typeModels. Programar uma forma de traduzir tipos / modelos separados em typeModels unificados e vice-versa
