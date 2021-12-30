@@ -24,7 +24,7 @@ User sessions are stored server-side, using [express-session](https://github.com
 
 ### Login
 
-Authenticates users to the system and sets a client-side session cookie. The user must login with their **username/email** (loginId) and **password**.
+Authenticates users to the system and sets a client-side session cookie. The user must login with their **username / email** (loginId) and **password**.
 
 - Route: `/auth/login`
 - Method: `POST`
@@ -93,7 +93,7 @@ Return one user by ID.
 
 ### Show by Session
 
-If there's a session ongoing, return user data from current session. Otherwise, returns Status Code [401](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) (Unauthorized) with no body.
+If there's a session ongoing, return user data from current session. Otherwise, returns Status Code [401](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) (Unauthorized) with an error message.
 
 - Route: `/user/session`
 - Method: `GET`
