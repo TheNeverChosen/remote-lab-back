@@ -28,6 +28,7 @@ Authenticates users to the system and sets a client-side session cookie. The use
 
 - Route: `/auth/login`
 - Method: `POST`
+
 - Payload Example:
   ```JSON
   {
@@ -35,6 +36,13 @@ Authenticates users to the system and sets a client-side session cookie. The use
     "password": "5uper_S3cr3t_P4s5"
   }
   ```
+
+### Logout
+
+Logs out the user out of the system and removes the client-side session cookie.
+
+- Route: `/auth/logout`
+- Method: `GET`
 
 ### Check Auth
 Verifies whether the current client is authenticated, with an ongoing session. Returns a JSON with boolean value `isAuth` (`false`: not logged, `true`: logged).
@@ -48,14 +56,6 @@ Verifies whether the current client is authenticated, with an ongoing session. R
   }
   ```
 
-### Logout
-
-Logs out the user out of the system and removes the client-side session cookie.
-
-- **Route:** `/auth/logout`
-- **Method:** `GET`
-
-
 ## User
 
 User routes handle work related to user data manipulation.
@@ -64,56 +64,52 @@ User routes handle work related to user data manipulation.
 
 Creates new user.
 
-- **Route:** `/user`
-- **Method:** `POST`
-
-Payload Example:
-
-```JSON
-{
-	"name": "Marie Hoffman",
-	"username": "marie97",
-	"email": "marie@gmail.com",
-	"password": "5uper_S3cr3t_P4s5",
-	"role": "USER"
-}
-```
+- Route: `/user`
+- Method: `POST`
+- Payload Example:
+  ```JSON
+  {
+    "name": "Marie Hoffman",
+    "username": "marie97",
+    "email": "marie@gmail.com",
+    "password": "5uper_S3cr3t_P4s5",
+    "role": "USER"
+  }
+  ```
 
 ### Show all
 
 Return all users.
 
-- **Route:** `/user`
-- **Method:** `GET`
+- Route: `/user`
+- Method: `GET`
 
 
 ### Show by ID
 
 Return one user by ID.
 
-- **Route:** `/user/:id`
-- **Method:** `GET`
+- Route: `/user/:id`
+- Method: `GET`
 
 ### Update
 
 Update user data by ID. All data can be updated with the exception of user ID and creation date.
 
-- **Route:** `/user/:id`
-- **Method:** `PUT`
-
-Payload Example:
-
-```JSON
-{
-	"name": "Just Marie",
-	"username": "NewMarie97",
-	"password": "PassT35t@457"
-}
-```
+- Route: `/user/:id`
+- Method: `PUT`
+- Payload Example:
+  ```JSON
+  {
+    "name": "Just Marie",
+    "username": "NewMarie97",
+    "password": "PassT35t@457"
+  }
+  ```
 
 ### Delete
 
 Delete user by ID.
 
-- **Route:** `/user/:id`
-- **Method:** `DELETE`
+- Route: `/user/:id`
+- Method: `DELETE`
