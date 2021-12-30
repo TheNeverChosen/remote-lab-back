@@ -3,7 +3,7 @@ const {redisCon, redisClient} = require('./redis');
 const session = require('./session'); //Session middleware configuration
 const compression = require('compression');
 const helmet = require('helmet');
-const cors = require('cors');
+const cors = require('./cors');
 const express = require('express');
 const router = require('../routes/router');
 const {errorNotFound, errorMongo, errorHandler} = require('./error');
@@ -12,12 +12,7 @@ async function load(app){
   await mongoCon(); //connecting to MongoDB
   await redisCon(); //connecting to Redis
 
-  app.use(cors({
-    origin: true,
-    methods: ['GET', 'PUT', 'POST', 'DELETE'],
-    credentials: true
-  }));
-  
+  app.use(cors());
   app.use(compression()); //compression middleware
   app.use(helmet()); //setting helmet
   app.use(express.json()); //parse application/json body
