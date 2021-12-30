@@ -8,7 +8,7 @@ const authPermTypes = {
 };
 
 function isAuth(session){
-  return session && session.userId;
+  return session && session.userId ? true : false;
 }
 
 async function checkAuthPermission(session, reqRole){
@@ -24,8 +24,6 @@ async function checkAuthPermission(session, reqRole){
 }
 
 async function matchCredentials(payload){
-  console.log(`Login Payload received:`);
-  console.log(payload);
   if(typeof payload.loginId != 'string') throw createError(400, 'Bad loginId');
   if(typeof payload.password != 'string') throw createError(400, 'Bad password');
 

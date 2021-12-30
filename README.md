@@ -1,31 +1,54 @@
 # **remote-lab-back**
 Back-end of Remote-Lab project.
 
+- [**remote-lab-back**](#--remote-lab-back--)
+  * [Auth](#auth)
+    + [Login](#login)
+    + [Check Auth](#check-auth)
+    + [Logout](#logout)
+  * [User](#user)
+    + [Create](#create)
+    + [Show all](#show-all)
+    + [Show by ID](#show-by-id)
+    + [Update](#update)
+    + [Delete](#delete)
+
+This is a restful web API, made in NodeJs with express.
 All requests, on all routes and methods, work with [JSON](https://www.json.org/json-en.html) data and return semantic [HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 
-## **Auth**
+## Auth
 
 Auth routes handle the work related to authentication and authorization.
 
 User sessions are stored server-side, using [express-session](https://github.com/expressjs/session) package and [Redis](https://redis.io/) database as session storage.
 
-### **Login**
+### Login
 
 Authenticates users to the system and sets a client-side session cookie. The user must login with their **username/email** (loginId) and **password**.
 
-- **Route:** `/auth/login`
-- **Method:** `POST`
+- Route: `/auth/login`
+- Method: `POST`
+- Payload Example:
+  ```JSON
+  {
+    "loginId": "markup@gmail.com",
+    "password": "5uper_S3cr3t_P4s5"
+  }
+  ```
 
-**Payload Example:**
+### Check Auth
+Verifies whether the current client is authenticated, with an ongoing session. Returns a JSON with boolean value `isAuth` (`false`: not logged, `true`: logged).
 
-```JSON
-{
-  "loginId": "markup@gmail.com",
-  "password": "5uper_S3cr3t_P4s5"
-}
-```
+- Route: `/auth`
+- Method: `GET`
+- Return Example:
+  ```JSON
+  {
+    "isAuth": false
+  }
+  ```
 
-### **Logout**
+### Logout
 
 Logs out the user out of the system and removes the client-side session cookie.
 
@@ -33,18 +56,18 @@ Logs out the user out of the system and removes the client-side session cookie.
 - **Method:** `GET`
 
 
-## **User**
+## User
 
 User routes handle work related to user data manipulation.
 
-### **Create**
+### Create
 
 Creates new user.
 
 - **Route:** `/user`
 - **Method:** `POST`
 
-**Payload Example:**
+Payload Example:
 
 ```JSON
 {
@@ -56,7 +79,7 @@ Creates new user.
 }
 ```
 
-### **Show All Users**
+### Show all
 
 Return all users.
 
@@ -64,21 +87,21 @@ Return all users.
 - **Method:** `GET`
 
 
-### **Show One User**
+### Show by ID
 
 Return one user by ID.
 
 - **Route:** `/user/:id`
 - **Method:** `GET`
 
-### **Update One User**
+### Update
 
 Update user data by ID. All data can be updated with the exception of user ID and creation date.
 
 - **Route:** `/user/:id`
 - **Method:** `PUT`
 
-**Payload Example:**
+Payload Example:
 
 ```JSON
 {
@@ -88,7 +111,7 @@ Update user data by ID. All data can be updated with the exception of user ID an
 }
 ```
 
-### **Delete One User**
+### Delete
 
 Delete user by ID.
 

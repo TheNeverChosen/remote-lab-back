@@ -19,10 +19,12 @@ function checkNotAuth(req, res, next){
   return next();
 }
 
+function isAuth(req, res){
+  res.json({isAuth: authSrv.isAuth(req.session)});
+}
+
 async function login(req, res){
   if(authSrv.isAuth(req.session)) throw createError(403, 'Forbidden Login: session ongoing');
-
-  console.log("Login body request:"); console.log(req.body);
 
   const user = await authSrv.matchCredentials(req.body);
   if(!user) throw createError(401, 'Wrong login credentials');
@@ -39,4 +41,4 @@ async function logout(req, res){
   });
 }
 
-module.exports = {checkNotAuth, checkAuthPermission, login, logout};
+module.exports = {checkAuthPermission, checkNotAuth, isAuth, login, logout};
