@@ -13,7 +13,7 @@ async function load(app){
   await redisCon(); //connecting to Redis
 
   app.use(cors({
-    origin: "*",
+    origin: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     credentials: true
   }));
