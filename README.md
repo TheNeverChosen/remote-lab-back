@@ -1,18 +1,17 @@
 # **remote-lab-back**
 Back-end of Remote-Lab project.
 
-- [**remote-lab-back**](#--remote-lab-back--)
-  * [Auth](#auth)
-    + [Login](#login)
-    + [Logout](#logout)
-    + [Check Auth](#check-auth)
-  * [User](#user)
-    + [Create](#create)
-    + [Show all](#show-all)
-    + [Show by ID](#show-by-id)
-    + [Show by Session](#show-by-session)
-    + [Update](#update)
-    + [Delete](#delete)
+- [Auth](#auth)
+  * [Login](#login)
+  * [Logout](#logout)
+  * [Check Auth](#check-auth)
+- [User](#user)
+  * [Create](#create)
+  * [Show all](#show-all)
+  * [Show by ID](#show-by-id)
+  * [Show by Session](#show-by-session)
+  * [Update](#update)
+  * [Delete](#delete)
 
 This is a restful web API, made in NodeJs with express.
 All requests, on all routes and methods, work with [JSON](https://www.json.org/json-en.html) data and return semantic [HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
