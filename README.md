@@ -4,12 +4,13 @@ Back-end of Remote-Lab project.
 - [**remote-lab-back**](#--remote-lab-back--)
   * [Auth](#auth)
     + [Login](#login)
-    + [Check Auth](#check-auth)
     + [Logout](#logout)
+    + [Check Auth](#check-auth)
   * [User](#user)
     + [Create](#create)
     + [Show all](#show-all)
     + [Show by ID](#show-by-id)
+    + [Show by Session](#show-by-session)
     + [Update](#update)
     + [Delete](#delete)
 
@@ -28,7 +29,6 @@ Authenticates users to the system and sets a client-side session cookie. The use
 
 - Route: `/auth/login`
 - Method: `POST`
-
 - Payload Example:
   ```JSON
   {
@@ -90,6 +90,13 @@ Return all users.
 Return one user by ID.
 
 - Route: `/user/:id`
+- Method: `GET`
+
+### Show by Session
+
+If there's a session ongoing, return user data from current session. Otherwise, returns Status Code [401](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) (Unauthorized) with no body.
+
+- Route: `/user/session`
 - Method: `GET`
 
 ### Update

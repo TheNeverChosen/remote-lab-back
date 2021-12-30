@@ -3,6 +3,7 @@ const userCont = require('./controllers/user');
 const authCont = require('./controllers/auth');
 
 router.get('/user', userCont.readAll);
+router.get('/user/session', authCont.checkAuthPermission(), userCont.readBySession);
 router.get('/user/:id', userCont.readById);
 
 router.get('/auth', authCont.isAuth);

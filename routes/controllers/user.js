@@ -13,6 +13,13 @@ async function readById(req, res){
   res.status(200).json(user);
 }
 
+async function readBySession(req, res){
+  const id = req.session.userId;
+  const user = await userSrv.readById(id);
+  if(!user) throw createError(404, 'User not found');
+  res.status(200).json(user);
+}
+
 async function create(req, res){
   await userSrv.create(req.body);
   res.status(201).end();
@@ -22,7 +29,7 @@ async function update(req, res){
   const id = req.params.id, user = req.body;
   const result = await userSrv.updateById(id, user);
 
-  if(!result.acknowledged) throw createError(500, 'Error while updating user');
+  if(!result.acknowledged) throw createError(400, 'Bad User Updating');
   if(result.matchedCount<1) throw createError(404, 'User not found');
 
   res.status(200).end();
@@ -34,4 +41,4 @@ async function remove(req, res){
   res.status(200).end();
 }
 
-module.exports = {readAll, readById, create, update, remove};
+module.exports = {readAll, readById, readBySession, create, update, remove};

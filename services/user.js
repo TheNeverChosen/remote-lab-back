@@ -4,24 +4,42 @@ const createError = require('http-errors');
 const {roles} = require('../utils/env');
 const verify = require('../utils/verify');
 
-async function readAll(){ //just for developing, NOT PRODUCTION!!!
+function resolveProjection(projection){
+  if(typeof projection == 'string') return projection;
+  if(Array.isArray(projection)) return projection.join(' ');
+  return null;
+}
+
+async function readAll(){ //remove in future updates!!!
   const usersArr = await User.find();
   return usersArr;
 }
 
 async function readMany(userFilter, projection){
   if(!userFilter) throw createError(400, 'Bad user filter');
+  if(projection){
+    projection = resolveProjection(projection);
+    if(!projection) throw createErro(400, 'Bad projection');
+  }
   return await User.find(userFilter, projection);
 }
 
 async function readOne(userFilter, projection){
   if(!userFilter) throw createError(400, 'Bad user filter');
+  if(projection){
+    projection = resolveProjection(projection);
+    if(!projection) throw createErro(400, 'Bad projection');
+  }
   return await User.findOne(userFilter, projection);
 }
 
-async function readById(id){
+async function readById(id, projection){
   if(!verify.isObjectId(id)) throw createError(400, 'Bad user id');
-  return await User.findById(id);
+  if(projection){
+    projection = resolveProjection(projection);
+    if(!projection) throw createErro(400, 'Bad projection');
+  }
+  return await User.findById(id, projection);
 }
 
 
@@ -36,7 +54,6 @@ async function updateById(id, updatedUser){
 
   delete updatedUser._id; //removing update on _id
   delete updatedUser.createdAt; //removing update on createdAt
-
   const result = await User.updateOne({_id:id}, updatedUser, {runValidators: true});
   if(result.modifiedCount>0 && updatedUser.role)
     await redisClient.set(id, verify.roleToNumber(updatedUser.role));
