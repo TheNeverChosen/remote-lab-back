@@ -9,7 +9,7 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: false,
   cookie:{
-    secure: false, // if true only transmit cookie over https
+    secure: env.NODE_ENV=='production' ? true : false, // https only in production mode
     httpOnly: false, // if true prevent client side JS from reading the cookie 
     sameSite: 'none',
     maxAge: env.SESSION_MAX_AGE // session max age in miliseconds
