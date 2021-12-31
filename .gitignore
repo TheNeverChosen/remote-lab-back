@@ -105,6 +105,6 @@ dist
 
 .vscode
 config/*
-server.sh
+server-set.sh
 models/clp.js
 models/clpVersion.js
