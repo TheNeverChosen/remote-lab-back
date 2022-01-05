@@ -33,7 +33,7 @@ async function readOne(userFilter, projection){
 }
 
 async function readById(id, projection){
-  if(!verify.isObjectId(id)) throw createError(400, 'Bad user id');
+  //if(!verify.isObjectId(id)) throw createError(400, 'Bad user id');
   if(projection){
     projection = resolveProjection(projection);
     if(!projection) throw createErro(400, 'Bad projection');
@@ -48,8 +48,6 @@ async function create(user){
 }
 
 async function updateById(id, updatedUser){
-  if(!verify.isObjectId(id)) throw createError(400, 'Bad user id');
-
   delete updatedUser._id; //removing update on _id
   delete updatedUser.createdAt; //removing update on createdAt
   const result = await User.updateOne({_id:id}, updatedUser, {runValidators: true});
@@ -59,8 +57,6 @@ async function updateById(id, updatedUser){
 }
 
 async function removeById(id){
-  if(!verify.isObjectId(id)) throw createError(400, 'Bad user id');
-  
   const {deletedCount} = await User.deleteOne({_id: id});
   if(deletedCount>=1) await redisClient.del(id);
 

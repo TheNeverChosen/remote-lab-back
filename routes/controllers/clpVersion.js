@@ -2,15 +2,15 @@ const clpVersionSrv = require('../../services/clpVersion');
 const createError = require('http-errors');
 
 async function readOne(req, res){
-  const filter = req.query;
-  const clpVer = await clpVersionSrv.readOne(filter);
+  const filter = req.query, {projection} = req.advanced;
+  const clpVer = await clpVersionSrv.readOne(filter, projection);
   if(!clpVer) throw createError(404, 'CLP version not found');
   res.status(200).json(clpVer);
 }
 
 async function readAll(req, res){
-  const filter = req.query;
-  const clpVerArr = await clpVersionSrv.readAll(filter);
+  const filter = req.query, {projection} = req.advanced;
+  const clpVerArr = await clpVersionSrv.readAll(filter, projection);
   res.status(200).json(clpVerArr);
 }
 

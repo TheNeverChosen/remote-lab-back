@@ -6,7 +6,7 @@ const helmet = require('helmet');
 const cors = require('./cors');
 const express = require('express');
 const router = require('../routes/router');
-const {errorNotFound, errorMongo, errorHandler} = require('./error');
+const error = require('./error');
 
 async function load(app){
   await mongoCon(); //connecting to MongoDB
@@ -19,7 +19,7 @@ async function load(app){
   app.use(session(redisClient)); //setting session middleware with redisClient for storage
   app.use(mongoSanitize()); //sanitizing req params/query/body from xss on MongoDB actions
   app.use(router); //setting all routes
-  app.use([errorNotFound, errorMongo, errorHandler]); //error handle
+  app.use(error()); //errors handler
 }
 
 module.exports = load;

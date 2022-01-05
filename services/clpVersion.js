@@ -1,13 +1,13 @@
 const {ClpVersion} = require('../models/clpVersion');
 const $ = require('mongo-dot-notation');
 
-async function readAll(filter){
-  const clpVerArr = await ClpVersion.find(filter);
+async function readAll(filter, projection){
+  const clpVerArr = await ClpVersion.find(filter, projection);
   return clpVerArr;
 }
 
-async function readOne(filter){
-  const clpVer = await ClpVersion.findOne(filter);
+async function readOne(filter, projection){
+  const clpVer = await ClpVersion.findOne(filter, projection);
   return clpVer;
 }
 

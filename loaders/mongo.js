@@ -17,6 +17,19 @@ function sanitizeReq(req, res, next){
   return next();
 }
 
+//advanced: projection, sort(future)
+function setAdvanced(req, res, next){
+  const {query} = req;
+  req.advanced = {
+    projection: query.projection
+    //sort: query.sort //future...
+  };
+  delete query.projection;
+  //delete query.sort; //future...
+
+  return next();
+}
+
 mongoose.set('runValidators', true);
 
-module.exports = {mongoCon, mongoose, mongoSanitize: ()=>sanitizeReq};
+module.exports = {mongoCon, mongoose, mongoSanitize: ()=>sanitizeReq, advancedQuery: ()=>setAdvanced};
