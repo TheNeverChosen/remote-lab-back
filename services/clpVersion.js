@@ -25,7 +25,7 @@ async function updateAll(filter, updatedClpVer){
 async function updateOne(filter, updatedClpVer){
   delete updatedClpVer._id; //removing update on _id
   delete updatedClpVer.createdAt; //removing update on createdAt
-  return await ClpVersion.updateOne(filter, $.flatten(updatedClpVer));
+  return await ClpVersion.updateOne(filter, updatedClpVer);
 }
 
 async function deleteOne(filter){

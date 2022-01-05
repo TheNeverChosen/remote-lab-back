@@ -4,10 +4,10 @@ const penv = process.env;
 
 module.exports = {
   env: {
-    NODE_ENV: penv.NODE_ENV,
+    NODE_ENV: penv.NODE_ENV || 'development',
     MONGO_USER: penv.MONGO_USER,
     MONGO_PASS: penv.MONGO_PASS,
-    MONGO_NAME: penv.NODE_ENV=='production' ? penv.MONGO_NAME : 'developing',
+    MONGO_NAME: penv.NODE_ENV=='production' ? penv.MONGO_NAME : 'development',
     REDIS_PASS: penv.REDIS_PASS,
     SESSION_NAME: penv.SESSION_NAME,
     SESSION_SECRET: penv.SESSION_SECRET,

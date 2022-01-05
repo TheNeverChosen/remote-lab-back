@@ -1,4 +1,5 @@
 const _set = require('lodash/set');
+const _isEmpty = require('lodash/isEmpty');
 
 function flattenObj(ob) {
   var toReturn = {};
@@ -8,6 +9,10 @@ function flattenObj(ob) {
 
     if ((typeof ob[i]) == 'object' && ob[i] !== null) {
       var flatObject = flattenObj(ob[i]);
+      if(_isEmpty(flatObject)){
+        toReturn[i] = flatObject;
+        continue;
+      }
       for (var x in flatObject) {
         if(!flatObject.hasOwnProperty(x)) continue;
         toReturn[i + '.' + x] = flatObject[x];

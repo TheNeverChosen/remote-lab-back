@@ -1,6 +1,19 @@
 const {mongoose} = require('../loaders/mongo');
 const {Schema} = mongoose;
 
+const ioSchema = new Schema({
+  digital:{
+    type: Number,
+    min: [0, 'The minimum number of digital inputs is 0'],
+    default: 0
+  },
+  analog:{
+    type: Number,
+    min: [0, 'The minimum number of analog inputs is 0'],
+    default: 0
+  }
+}, {_id: false});
+
 const clpVerDesc = {
   name:{
     type: String,
@@ -10,33 +23,18 @@ const clpVerDesc = {
     required: [true, 'CLP version name is required']
   },
   input:{
-    digital:{
-      type: Number,
-      min: [0, 'The minimum number of digital inputs is 0'],
-      default: 0
-    },
-    analog:{
-      type: Number,
-      min: [0, 'The minimum number of analog inputs is 0'],
-      default: 0
-    }
+    type: ioSchema,
+    default: ()=>({})
   },
   output:{
-    digital:{
-      type: Number,
-      min: [0, 'The minimum number of digital outputs is 0'],
-      default: 0
-    },
-    analog:{
-      type: Number,
-      min: [0, 'The minimum number of analog outputs is 0'],
-      default: 0
-    }
+    type: ioSchema,
+    required: true,
+    default: ()=>({})
   },
   createdAt:{
     type: Date,
     required: [true, 'CLP version creation date is required']
-  },
+  }
 };
 
 const clpVerSchema = new Schema(clpVerDesc, {versionKey: false, strictQuery: 'throw'});
