@@ -107,4 +107,3 @@ dist
 config/*
 server-set.sh
 models/clp.js
-models/clpVersion.js

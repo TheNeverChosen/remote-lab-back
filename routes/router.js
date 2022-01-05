@@ -1,12 +1,10 @@
 const router = require('express').Router();
-const getRouter = require('./get'),
-  postRouter = require('./post'),
-  putRouter = require('./put'),
-  deleteRouter = require('./delete');
+const authRouter = require('./auth'),
+  clpVerRouter = require('./clpVersion'),
+  userRouter = require('./user');
 
-router.use(getRouter);
-router.use(postRouter);
-router.use(putRouter);
-router.use(deleteRouter);
+router.use(authRouter);
+router.use(clpVerRouter);
+router.use(userRouter);
 
 module.exports = router;

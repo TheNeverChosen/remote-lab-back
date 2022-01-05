@@ -22,7 +22,7 @@ async function readBySession(req, res){
 
 async function create(req, res){
   await userSrv.create(req.body);
-  res.status(201).end();
+  res.status(200).end();
 }
 
 async function update(req, res){

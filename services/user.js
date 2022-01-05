@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const {redisClient} = require('../loaders/redis');
 const createError = require('http-errors');
-const {roles} = require('../utils/env');
 const verify = require('../utils/verify');
 
 function resolveProjection(projection){
@@ -41,7 +40,6 @@ async function readById(id, projection){
   }
   return await User.findById(id, projection);
 }
-
 
 async function create(user){
   user.createdAt = new Date().toISOString();
