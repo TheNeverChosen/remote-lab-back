@@ -215,9 +215,9 @@ Creates new CLP version.
 
 #### Get All
 
-Returns all CLP versions. A filter can be provided to narrow the results.
+Returns many CLP versions. A filter can be provided to narrow the results.
 
-- Route: `/clp-version/all`
+- Route: `/clp-version/many`
 - Method: `GET`
 - Query: **Filter** (`Optional`), **Projection** (`Optional`)
 
@@ -229,11 +229,11 @@ Returns one CLP version, based on provided filter.
 - Method: `GET`
 - Query: **Filter** (`Mandatory`), **Projection** (`Optional`)
 
-#### Update All
+#### Update Many
 
-Update all CLP versions. A filter can be provided to narrow the results.
+Update many CLP versions. A filter can be provided to narrow the results.
 
-- Route: `/clp-version/all`
+- Route: `/clp-version/many`
 - Method: `PUT`
 - Query: **Filter** (`Optional`)
 - Body: `Mandatory`

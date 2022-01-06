@@ -1,9 +1,9 @@
 const clpVersionSrv = require('../../services/clpVersion');
 const createError = require('http-errors');
 
-async function readAll(req, res){
+async function updateMany(req, res){
   const filter = req.query, {projection} = req.queryAdvanced;
-  const clpVerArr = await clpVersionSrv.readAll(filter, projection);
+  const clpVerArr = await clpVersionSrv.updateMany(filter, projection);
   res.status(200).json(clpVerArr);
 }
 
@@ -19,9 +19,9 @@ async function create(req, res){
   res.status(200).end();
 }
 
-async function updateAll(req, res){
+async function updateMany(req, res){
   const filter = req.query, updatedClpVer = req.bodyFlat;
-  const result = await clpVersionSrv.updateAll(filter, updatedClpVer);
+  const result = await clpVersionSrv.updateMany(filter, updatedClpVer);
 
   if(!result.acknowledged) throw createError(400, 'Bad CLP version Updating');
 
@@ -45,4 +45,4 @@ async function deleteOne(req, res){
   res.status(204).end();
 }
 
-module.exports = {readAll, readOne, create, updateAll, updateOne, deleteOne};
+module.exports = {readMany, readOne, create, updateMany, updateOne, deleteOne};

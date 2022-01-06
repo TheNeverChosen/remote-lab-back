@@ -1,7 +1,7 @@
 const {ClpVersion} = require('../models/clpVersion');
 const $ = require('mongo-dot-notation');
 
-async function readAll(filter, projection){
+async function readMany(filter, projection){
   const clpVerArr = await ClpVersion.find(filter, projection);
   return clpVerArr;
 }
@@ -16,7 +16,7 @@ async function create(clpVersion){
   await ClpVersion.create(clpVersion);
 }
 
-async function updateAll(filter, updatedClpVer){
+async function updateMany(filter, updatedClpVer){
   delete updatedClpVer._id; //removing update on _id
   delete updatedClpVer.createdAt; //removing update on createdAt
   return await ClpVersion.updateMany(filter, $.flatten(updatedClpVer));
@@ -32,4 +32,4 @@ async function deleteOne(filter){
   return await ClpVersion.deleteOne(filter);
 }
 
-module.exports = {readAll, readOne, create, updateAll, updateOne, deleteOne};
+module.exports = {readMany, readOne, create, updateMany, updateOne, deleteOne};
