@@ -1,17 +1,28 @@
 # **remote-lab-back**
 Back-end of Remote-Lab project.
 
-- [Auth](#auth)
-  * [Login](#login)
-  * [Logout](#logout)
-  * [Check Auth](#check-auth)
-- [User](#user)
-  * [Create](#create)
-  * [Show all](#show-all)
-  * [Show by ID](#show-by-id)
-  * [Show by Session](#show-by-session)
-  * [Update](#update)
-  * [Delete](#delete)
+- [Introduction](#introduction)
+- [Filtering](#filtering)
+- [Projection](#projection)
+- [Resources](#resources)
+  * [Auth](#auth)
+    + [Login](#login)
+    + [Logout](#logout)
+    + [Check Auth](#check-auth)
+  * [User](#user)
+    + [Create](#create)
+    + [Show all](#show-all)
+    + [Get by ID](#get-by-id)
+    + [Get by Session](#get-by-session)
+    + [Update](#update)
+    + [Delete](#delete)
+  * [CLP Version](#clp-version)
+    + [Create](#create-1)
+    + [Get All](#get-all)
+    + [Get One](#get-one)
+    + [Update All](#update-all)
+    + [Update One](#update-one)
+    + [Delete One](#delete-one)
 
 ## Introduction
 
@@ -167,22 +178,21 @@ Delete user by ID.
 
 CLP Version routes handle work related to CLP Versions management.
 
-**Schema:**
-
-```JS
-{
-  name: String,
-  input:{
-    digital: Number,
-    analog: Number
-  },
-  output:{
-    digital: Number,
-    analog: Number
-  },
-  createdAt: Date
-}
-```
+- **Schema:**
+  ```JS
+  {
+    name: String,
+    input:{
+      digital: Number,
+      analog: Number
+    },
+    output:{
+      digital: Number,
+      analog: Number
+    },
+    createdAt: Date
+  }
+  ```
 
 #### Create
 
