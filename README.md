@@ -4,7 +4,7 @@ Back-end of Remote-Lab project.
 - [Introduction](#introduction)
 - [Filtering](#filtering)
 - [Projection](#projection)
-- [Resources](#resources)
+- [Features](#features)
   * [Auth](#auth)
     + [Login](#login)
     + [Logout](#logout)
@@ -29,9 +29,9 @@ Back-end of Remote-Lab project.
 This is a RESTful web API, made in NodeJs with express.
 All requests, on all routes and methods, work with [JSON](https://www.json.org/json-en.html) data and return semantic [HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 
-The API resources can be accessed by specific Routes and HTTP methods. Depending on the resource type, it's possible (or required) to send data by the `query string` for filtering, or by the `body`. This information will be in the description of each API feature [below](#resources).
+The API features can be accessed by specific Routes and HTTP methods. Depending on the feature, it's possible (or required) to send data by the `query string` for filtering, or by the `body`. This information will be in the description of each API feature [below](#features).
 
-If the resource description does not mention the optional or mandatory submission of certain data (e.g. query string, body), then that specific resource does not support it and will ignore it if submitted.
+If the feature description does not mention the optional or mandatory submission of certain data (e.g. query string, body), then that specific feature does not support it and will ignore it if submitted.
 
 ## Filtering
 
@@ -39,7 +39,7 @@ In some requests, it's possible to send filtering data to select a specific reso
 
 This is done by sending pairs of **\<field\>**:**\<value\>** in the request's query string. These pairs can filter the database to interact only with the data where **\<field\>** matches with the **\<value\>**.
 
-If the API resource requires a filter to interact with only one piece of data, and there's more than one match for the filter, the API will interact with the first match. Generally, the first match occurs with the oldest data.
+If the API feature requires a filter to interact with only one piece of data, and there's more than one match for the filter, the API will interact with the first match. Generally, the first match occurs with the oldest data.
 
 ## Projection
 
@@ -51,7 +51,7 @@ If the required field is inside a nested object, [dot notation](https://docs.mon
 
 If no projection is provided, the API will return the data with all fields.
 
-## Resources
+## Features
 
 ### Auth
 
