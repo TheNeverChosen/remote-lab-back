@@ -1,9 +1,9 @@
 const clpVersionSrv = require('../../services/clpVersion');
 const createError = require('http-errors');
 
-async function updateMany(req, res){
+async function readMany(req, res){
   const filter = req.query, {projection} = req.queryAdvanced;
-  const clpVerArr = await clpVersionSrv.updateMany(filter, projection);
+  const clpVerArr = await clpVersionSrv.readMany(filter, projection);
   res.status(200).json(clpVerArr);
 }
 
