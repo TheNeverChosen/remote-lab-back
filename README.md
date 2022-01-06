@@ -96,21 +96,20 @@ Verifies whether the current client is authenticated, with an ongoing session. R
 
 User routes handle work related to user data manipulation.
 
-**Schema:**
-
-```JS
-{
-  name: String,
-  username: String,
-  email: String,
-  password: String,
-  role:{
-    type: String,
-    enum: ['MASTER', 'ADMIN', 'USER']
-  },
-  createdAt: Date
-}
-```
+- **Schema:**
+  ```JS
+  {
+    name: String,
+    username: String,
+    email: String,
+    password: String,
+    role:{
+      type: String,
+      enum: ['MASTER', 'ADMIN', 'USER']
+    },
+    createdAt: Date
+  }
+  ```
 
 #### Create
 
