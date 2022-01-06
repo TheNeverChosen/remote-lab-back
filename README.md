@@ -233,7 +233,7 @@ Returns one CLP version, based on provided filter.
 
 Update all CLP versions. A filter can be provided to narrow the results.
 
-- Route: `/clp-version`
+- Route: `/clp-version/all`
 - Method: `PUT`
 - Query: **Filter** (`Optional`)
 - Body: `Mandatory`
@@ -260,5 +260,5 @@ Update one CLP version, based on provided filter.
 Delete one CLP version data, based on provided filter.
 
 - Route: `/clp-version`
-- Method: `PUT`
+- Method: `DELETE`
 - Query: **Filter** (`Mandatory`)
