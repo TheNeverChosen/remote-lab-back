@@ -213,7 +213,7 @@ Creates new CLP version.
   }
   ```
 
-#### Get All
+#### Get Many
 
 Returns many CLP versions. A filter can be provided to narrow the results.
 
