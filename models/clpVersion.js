@@ -1,5 +1,6 @@
 const {mongoose} = require('../loaders/mongo');
 const {Schema} = mongoose;
+const validator = require('validator');
 
 const ioSchema = new Schema({
   digital:{
@@ -12,15 +13,19 @@ const ioSchema = new Schema({
     min: [0, 'The minimum number of analog inputs is 0'],
     default: 0
   }
-}, {_id: false});
+}, {versionKey: false, _id: false});
 
-const clpVerDesc = {
-  name:{
+const clpVerSchema = new Schema({
+  release:{
     type: String,
     trim: true,
     unique: true,
-    maxlength: [72, 'CLP version name length cannot be greater than 72 characters'],
-    required: [true, 'CLP version name is required']
+    maxlength: [11, 'CLP version release length cannot be greater than 11 characters'],
+    validate:{
+      validator: v => validator.isSemVer(v),
+      message: props => `${props.value} is not a valid semantic version`
+    },
+    required: [true, 'CLP version release is required']
   },
   input:{
     type: ioSchema,
@@ -28,18 +33,15 @@ const clpVerDesc = {
   },
   output:{
     type: ioSchema,
-    required: true,
     default: ()=>({})
   },
   createdAt:{
     type: Date,
     required: [true, 'CLP version creation date is required']
   }
-};
-
-const clpVerSchema = new Schema(clpVerDesc, {versionKey: false, strictQuery: 'throw'});
+}, {versionKey: false, strictQuery: 'throw'});
 
 module.exports = {
   ClpVersion: mongoose.model('clp_version', clpVerSchema),
-  clpVerDesc
+  clpVerSchema
 };
