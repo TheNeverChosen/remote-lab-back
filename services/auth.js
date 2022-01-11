@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const verify = require('../utils/verify');
 const createError = require('http-errors');
+const {redisClient} = require('../loaders/redis');
 const authPermTypes = {
   NO_SESSION: -1,
   INSUFFICIENT: 0,
@@ -31,6 +32,7 @@ async function matchCredentials(payload){
 
   if(verify.isUsername(loginId)) return await User.findOne({username:loginId.trim(), password}, '_id');
   else if(verify.isEmail(loginId)) return await User.findOne({email:loginId.trim(), password}, '_id');
+  return null;
 }
 
 module.exports = {isAuth, authPermTypes, checkAuthPermission, matchCredentials};

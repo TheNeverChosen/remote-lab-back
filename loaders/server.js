@@ -5,6 +5,7 @@ const load = require('./load');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const expressWs = require('./expressWs');
 
 function redirectHttps(req, res, next){
   req.secure ? next() : res.redirect('https://' + req.headers.host + req.url);
@@ -13,7 +14,10 @@ function redirectHttps(req, res, next){
 async function createApp(){
   const app = express();
   if(env.NODE_ENV=='production') app.use(redirectHttps);
-  await load(app);
+
+  expressWs(app); //setting WebSocket server, and app.ws method
+  await load(app); //load App (DB, routes, auth, etc...)
+
   return app;
 }
 

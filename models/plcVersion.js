@@ -15,17 +15,17 @@ const ioSchema = new Schema({
   }
 }, {versionKey: false, _id: false});
 
-const clpVerSchema = new Schema({
+const plcVerSchema = new Schema({
   release:{
     type: String,
     trim: true,
     unique: true,
-    maxlength: [11, 'CLP version release length cannot be greater than 11 characters'],
+    maxlength: [11, 'PLC version release length cannot be greater than 11 characters'],
     validate:{
       validator: v => validator.isSemVer(v),
       message: props => `${props.value} is not a valid semantic version`
     },
-    required: [true, 'CLP version release is required']
+    required: [true, 'PLC version release is required']
   },
   input:{
     type: ioSchema,
@@ -37,11 +37,11 @@ const clpVerSchema = new Schema({
   },
   createdAt:{
     type: Date,
-    required: [true, 'CLP version creation date is required']
+    required: [true, 'PLC version creation date is required']
   }
 }, {versionKey: false, strictQuery: 'throw'});
 
 module.exports = {
-  ClpVersion: mongoose.model('clp_version', clpVerSchema),
-  clpVerSchema
+  PlcVersion: mongoose.model('plc_version', plcVerSchema),
+  plcVerSchema
 };

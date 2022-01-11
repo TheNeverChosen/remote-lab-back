@@ -1,6 +1,6 @@
 const {mongoose} = require('../loaders/mongo');
 const {Schema} = mongoose;
-const {clpVerSchema} = require('./clpVersion');
+const {plcVerSchema} = require('./plcVersion');
 const {deviceModels} = require('../utils/env');
 const validator = require('validator');
 
@@ -48,12 +48,12 @@ const devicesSchema = new Schema({
   }
 }, {versionKey: false, _id: false});
 
-const clpSchema = new Schema({
+const plcSchema = new Schema({
   name:{
     type: String,
     trim: true,
-    maxlength: [72, 'CLP name length cannot be greater than 72 characters'],
-    required: [true, 'CLP name is required']
+    maxlength: [72, 'PLC name length cannot be greater than 72 characters'],
+    required: [true, 'PLC name is required']
   },
   reference:{
     type: String,
@@ -61,13 +61,13 @@ const clpSchema = new Schema({
     unique: true,
     validate:{
       validator: v => validator.isHash(v, 'sha256'),
-      message: props => `${props.value} is not a valid CLP reference`
+      message: props => `${props.value} is not a valid PLC reference`
     }
   },
   version:{
-    type: clpVerSchema,
+    type: plcVerSchema,
     excludeIndexes: true,
-    required: [true, 'CLP version description required']
+    required: [true, 'PLC version description required']
   },
   devices:{
     type: devicesSchema,
@@ -75,4 +75,4 @@ const clpSchema = new Schema({
   }
 }, {versionKey: false, strictQuery: 'throw'});
 
-module.exports = mongoose.model('clp', clpSchema);
+module.exports = mongoose.model('plc', plcSchema);
