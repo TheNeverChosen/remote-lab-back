@@ -1,4 +1,5 @@
 const expressWs = require('express-ws');
+const wsRouter = require('../routes/ws');
 
 function heartbeat() {
   this.isAlive = true;
@@ -31,6 +32,9 @@ function configWssPingIsAlive(wss){
 function expressWsLoad(app, server){
   const wsInstance = expressWs(app, server);
   configWssPingIsAlive(wsInstance.getWss());
+  
+  app.use(wsRouter());
+
   console.log('ExpressWs configured');
   return wsInstance;
 }
