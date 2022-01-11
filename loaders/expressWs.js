@@ -14,19 +14,22 @@ function configWssPingIsAlive(wss){
   
   const interval = setInterval(function ping(){
     wss.clients.forEach(function each(ws) {
-      if (ws.isAlive === false) return ws.terminate();
+      if (ws.isAlive === false){
+        console.log('Forced WS closing.');
+        return ws.terminate();
+      }
       ws.isAlive = false;
       ws.ping();
     });
-  }, 15000);
+  }, 2000);
   
   wss.on('close', function close(){
     clearInterval(interval);
   });
 }
 
-function expressWsLoad(app){
-  const wsInstance = expressWs(app);
+function expressWsLoad(app, server){
+  const wsInstance = expressWs(app, server);
   configWssPingIsAlive(wsInstance.getWss());
   console.log('ExpressWs configured');
   return wsInstance;

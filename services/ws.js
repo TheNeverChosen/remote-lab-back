@@ -7,4 +7,8 @@ function arduinoMessage(data){
   this.send(`SERVER: Message [${data}] received!`);
 }
 
-module.exports = {arduinoOpen, arduinoMessage};
+function arduinoClose(){
+  console.log('Arduino graceful disconnect');
+}
+
+module.exports = {arduinoOpen, arduinoMessage, arduinoClose};
