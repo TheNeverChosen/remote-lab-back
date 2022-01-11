@@ -8,14 +8,27 @@ const fs = require('fs');
 const expressWs = require('./expressWs');
 
 function redirectHttps(req, res, next){
-  req.secure ? next() : res.redirect('https://' + req.headers.host + req.url);
+  console.log('\n\n==========>>> Protocol: ' + req.protocol);
+
+  if(req.secure){
+    console.log('==========Conexao segura iniciada!==========');
+    console.log('Prosseguindo...');
+    next();
+  }
+  else{
+    console.log('==========Conexao sem segurança iniciada==========');
+    console.log('redirecionando para https...');
+    res.redirect('https://' + req.headers.host + req.url);
+  }
+
+  //req.secure ? next() : res.redirect('https://' + req.headers.host + req.url);
 }
 
 async function createApp(){
   const app = express();
   if(env.NODE_ENV=='production') app.use(redirectHttps);
 
-  expressWs(app); //setting WebSocket server, and app.ws method
+  expressWs(app);  //setting WebSocket server, and app.ws method
   await load(app); //load App (DB, routes, auth, etc...)
 
   return app;

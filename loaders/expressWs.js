@@ -28,6 +28,7 @@ function configWssPingIsAlive(wss){
 function expressWsLoad(app){
   const wsInstance = expressWs(app);
   configWssPingIsAlive(wsInstance.getWss());
+  console.log('ExpressWs configured');
   return wsInstance;
 }
 
