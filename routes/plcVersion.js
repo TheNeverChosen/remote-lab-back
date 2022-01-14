@@ -2,8 +2,6 @@ const router = require('express').Router();
 const {noEmptyQuery} = require('./controllers/middles');
 const plcVerCont = require('./controllers/plcVersion');
 
-
-
 module.exports = ()=>{
   router.get('/plc/version/many', plcVerCont.readMany);
   router.get('/plc/version', noEmptyQuery(), plcVerCont.readOne);

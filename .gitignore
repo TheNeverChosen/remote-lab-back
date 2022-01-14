@@ -1,6 +1,7 @@
 .vscode
-config/*
+config
 server-set.sh
+ssl
 
 # Logs
 logs

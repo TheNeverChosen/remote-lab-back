@@ -1,58 +1,37 @@
 const {env} = require('../utils/env');
 const express = require('express');
 require('express-async-errors');
-const load = require('./load');
+const {loadDb, loadApp} = require('./load');
+const fs = require('fs');
 const http = require('http');
 const https = require('https');
-const fs = require('fs');
-const expressWs = require('./expressWs');
+const path = require("path");
 
-function redirectHttps(req, res, next){
-  console.log('\n\n==========>>> Protocol: ' + req.protocol);
+function httpsCreds(){
+  const creds = {
+    key: fs.readFileSync(path.resolve(`${env.SSL_PATH}/private.key`)),
+    cert: fs.readFileSync(path.resolve(`${env.SSL_PATH}/certificate.crt`))
+  };
+  if(fs.existsSync(path.resolve(`${env.SSL_PATH}/ca_bundle.crt`)))
+    creds.ca = fs.readFileSync(path.resolve(`${env.SSL_PATH}/ca_bundle.crt`))
 
-  if(req.secure){
-    console.log('==========Conexao segura iniciada!==========');
-    console.log('Prosseguindo...');
-    next();
-  }
-  else{
-    console.log('==========Conexao sem segurança iniciada==========');
-    console.log('redirecionando para https...');
-    res.redirect('https://' + req.headers.host + req.url);
-  }
-
-  //req.secure ? next() : res.redirect('https://' + req.headers.host + req.url);
+  return creds;
 }
 
-async function loadApp(app, server){
-  expressWs(app, server);  //setting WebSocket server, and app.ws method
-  
-  if(env.NODE_ENV=='production') app.use(redirectHttps);
-  await load(app); //load App (DB, routes, auth, etc...)
+async function loadAll(app, wsServer){
+  await loadDb(); //Loading database connections
+  await loadApp(app, wsServer); //load App (DB, routes, auth, etc...)
 }
 
 async function startServer(){
   const app = express();
-  if(env.NODE_ENV=='production'){
-    const httpsCreds = {
-      key: fs.readFileSync(`${env.SSL_PATH}/private.key`),
-      cert: fs.readFileSync(`${env.SSL_PATH}/certificate.crt`),
-      ca: fs.readFileSync(`${env.SSL_PATH}/ca_bundle.crt`)
-    };
-    const httpServer = http.createServer(app);
-    const httpsServer = https.createServer(httpsCreds, app);
+  const httpServer = http.createServer(); //Used for WebSocket Server
+  const httpsServer = https.createServer(httpsCreds(), app); //Used for Rest API
 
-    await loadApp(app, httpsServer);
-
-    httpServer.listen(80, ()=>{console.log(`HTTP Redirector listening at port 80`);});
-    httpsServer.listen(443, ()=>{console.log(`HTTPS App listening at port 443`);});
-  } else{
-    const port = env.APP_PORT || 3333;
-    const httpServer = http.createServer(app);
-    await loadApp(app, httpServer);
-    httpServer.listen(port, ()=>{console.log(`App listening at http://localhost:${port}`);});
-    //app.listen(port, ()=>{console.log(`App listening at http://localhost:${port}`);});
-  }
+  await loadAll(app, httpServer);
+  
+  httpServer.listen(env.HTTP_PORT, ()=>{console.log(`HTTP Server listening at port ${env.HTTP_PORT}`);});
+  httpsServer.listen(env.HTTPS_PORT, ()=>{console.log(`HTTPS Server listening at port ${env.HTTPS_PORT}`);});
 }
 
 module.exports = {startServer};

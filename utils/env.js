@@ -12,8 +12,10 @@ module.exports = {
     SESSION_NAME: penv.SESSION_NAME,
     SESSION_SECRET: penv.SESSION_SECRET,
     SESSION_MAX_AGE: parseInt(penv.SESSION_MAX_AGE),
-    APP_PORT: penv.APP_PORT,
-    SSL_PATH: penv.SSL_PATH
+    SSL_PATH: penv.SSL_PATH,
+    WS_PING_TIME: penv.WS_PING_TIME,
+    HTTP_PORT: penv.HTTP_PORT,
+    HTTPS_PORT: penv.HTTPS_PORT,
   },
   roles: ['MASTER', 'ADMIN', 'DEFAULT'],
   IOs: ['input', 'output'],

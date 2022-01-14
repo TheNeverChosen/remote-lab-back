@@ -1,42 +1,38 @@
+const {env} = require('../utils/env');
 const expressWs = require('express-ws');
-const wsRouter = require('../routes/ws');
 
 function heartbeat() {
   this.isAlive = true;
-  console.log('Pong received!');
 }
 
 function configWssPingIsAlive(wss){
   wss.on('connection', function connection(ws){
-    console.log('client connected');
     ws.isAlive = true;
     ws.on('pong', heartbeat);
   });
   
-  const interval = setInterval(function ping(){
-    wss.clients.forEach(function each(ws) {
-      if (ws.isAlive === false){
-        console.log('Forced WS closing.');
-        return ws.terminate();
-      }
+  const interval = setInterval(()=>{
+    wss.clients.forEach((ws)=>{
+      if(ws.isAlive === false) return ws.terminate();
       ws.isAlive = false;
       ws.ping();
     });
-  }, 2000);
+  }, env.WS_PING_TIME);
   
   wss.on('close', function close(){
     clearInterval(interval);
   });
+
+  wss.on('error', (err)=>{
+    console.log('==========WS Server ERROR==========');
+    console.log(err);
+  });
 }
 
-function expressWsLoad(app, server){
-  const wsInstance = expressWs(app, server);
-  configWssPingIsAlive(wsInstance.getWss());
-  
-  app.use(wsRouter());
-
-  console.log('ExpressWs configured');
-  return wsInstance;
+function expressWsLoad(app, wsServer){
+  const wssInstance = expressWs(app, wsServer);
+  configWssPingIsAlive(wssInstance.getWss());
+  return wssInstance;
 }
 
 module.exports = expressWsLoad;

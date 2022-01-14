@@ -1,10 +1,11 @@
-const wsSrv = require('../../services/ws');
+const wsArduinoSrv = require('../../services/wsArduino');
 
 function arduinoPlc(ws, req){
   console.log('WS CONTROLLER REACHED');
-  ws.on('open', wsSrv.arduinoOpen);
-  ws.on('message', wsSrv.arduinoMessage);
-  ws.on('close', wsSrv.arduinoClose);
+  ws.on('open', wsArduinoSrv.arduinoOpen);
+  ws.on('message', wsArduinoSrv.arduinoMessage);
+  ws.on('close', wsArduinoSrv.arduinoClose);
+  ws.on('error', (err)=>{console.log(err)});
 }
 
 module.exports = {arduinoPlc};
