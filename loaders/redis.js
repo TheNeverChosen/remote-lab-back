@@ -1,5 +1,5 @@
 const {env} = require('../utils/env');
-const { createClient } = require('redis');
+const {createClient} = require('redis');
 
 const redisClient = createClient({
   url: `redis://:${env.REDIS_PASS}@localhost`,

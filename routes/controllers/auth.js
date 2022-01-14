@@ -24,8 +24,6 @@ function isAuth(req, res){
 }
 
 async function login(req, res){
-  if(authSrv.isAuth(req.session)) throw createError(403, 'Forbidden Login: session ongoing');
-
   const user = await authSrv.matchCredentials(req.body);
   if(!user) throw createError(401, 'Wrong login credentials');
 

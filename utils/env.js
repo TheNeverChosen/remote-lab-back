@@ -12,16 +12,34 @@ module.exports = {
     SESSION_NAME: penv.SESSION_NAME,
     SESSION_SECRET: penv.SESSION_SECRET,
     SESSION_MAX_AGE: parseInt(penv.SESSION_MAX_AGE),
-    APP_PORT: penv.APP_PORT,
-    SSL_PATH: penv.SSL_PATH
+    SSL_PATH: penv.SSL_PATH,
+    WS_PING_TIME: penv.WS_PING_TIME,
+    HTTP_PORT: penv.HTTP_PORT,
+    HTTPS_PORT: penv.HTTPS_PORT,
   },
-  roles: ['MASTER', 'ADMIN', 'USER'],
+  roles: ['MASTER', 'ADMIN', 'DEFAULT'],
+  IOs: ['input', 'output'],
+  types: ['digital', 'analog'],
   deviceModels: {
-    inputDg: ['GENERIC'],
-    inputAl: ['GENERIC'],
-    outputDg: ['GENERIC'],
-    outputAl: []
+    input:{
+      digital:{
+        models: ['GENERIC'],
+        typeModels: [{name: 'IO_IN_DG_GEN', code:1}]
+      },
+      analog:{
+        models: ['GENERIC'],
+        typeModels: [{name: 'IO_IN_AL_GEN', code: 101}]
+      }
+    },
+    output:{
+      digital:{
+        models: ['GENERIC'],
+        typeModels: [{name: 'IO_OUT_DG_GEN', code: 201}]
+      },
+      analog:{
+        models: [],
+        typeModels: []
+      }
+    }
   }
 };
-
-//substituir deviceModels por full typeModels. Programar uma forma de traduzir tipos / modelos separados em typeModels unificados e vice-versa
