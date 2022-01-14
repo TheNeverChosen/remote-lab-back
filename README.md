@@ -16,7 +16,7 @@ Back-end of Remote-Lab project.
     + [Get by Session](#get-by-session)
     + [Update](#update)
     + [Delete](#delete)
-  * [CLP Version](#clp-version)
+  * [PLC Version](#clp-version)
     + [Create](#create-1)
     + [Get All](#get-all)
     + [Get One](#get-one)
@@ -105,7 +105,7 @@ User routes handle work related to user data manipulation.
     password: String,
     role:{
       type: String,
-      enum: ['MASTER', 'ADMIN', 'USER']
+      enum: ['MASTER', 'ADMIN', 'DEFAULT']
     },
     createdAt: Date
   }
@@ -124,7 +124,7 @@ Creates new user.
     "username": "John73",
     "email": "john.mars@gmail.com",
     "password": "5uper_S3cr3t_P4s5",
-    "role": "ADMIN"
+    "role": "DEFAULT"
   }
   ```
 
@@ -173,14 +173,14 @@ Delete user by ID.
 - Method: `DELETE`
 
 
-### CLP Version
+### PLC Version
 
-CLP Version routes handle work related to CLP Versions management.
+PLC Version routes handle work related to PLC Versions management.
 
 - **Schema:**
   ```JS
   {
-    name: String,
+    release: String, //Semantic Version (Max Size: 11)
     input:{
       digital: Number,
       analog: Number
@@ -195,14 +195,14 @@ CLP Version routes handle work related to CLP Versions management.
 
 #### Create
 
-Creates new CLP version.
+Creates new PLC version.
 
-- Route: `/clp-version`
+- Route: `/plc/version`
 - Method: `POST`
 - Body: `Mandatory`
   ```JSON
   {
-    "name": "Genesis",
+    "release": "1.2.0",
     "input":{
       "digital": 5,
       "analog": 3
@@ -215,31 +215,31 @@ Creates new CLP version.
 
 #### Get Many
 
-Returns many CLP versions. A filter can be provided to narrow the results.
+Returns many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
 
-- Route: `/clp-version/many`
+- Route: `/plc/version/many`
 - Method: `GET`
 - Query: **Filter** (`Optional`), **Projection** (`Optional`)
 
 #### Get One
 
-Returns one CLP version, based on provided filter.
+Returns one PLC version, based on provided filter.
 
-- Route: `/clp-version`
+- Route: `/plc/version`
 - Method: `GET`
 - Query: **Filter** (`Mandatory`), **Projection** (`Optional`)
 
 #### Update Many
 
-Update many CLP versions. A filter can be provided to narrow the results.
+Update many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
 
-- Route: `/clp-version/many`
+- Route: `/plc/version/many`
 - Method: `PUT`
 - Query: **Filter** (`Optional`)
 - Body: `Mandatory`
   ```JSON
   {
-    "name": "Genesis2",
+    "name": "7.9.2",
     "input":{
       "digital": 10
     }
@@ -248,17 +248,25 @@ Update many CLP versions. A filter can be provided to narrow the results.
 
 #### Update One
 
-Update one CLP version, based on provided filter.
+Update one PLC version, based on provided filter.
 
-- Route: `/clp-version`
+- Route: `/plc/version`
 - Method: `PUT`
 - Query: **Filter** (`Mandatory`)
 - Body: `Mandatory`
 
+#### Delete Many
+
+Delete many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
+
+- Route: `/plc/version/many`
+- Method: `DELETE`
+- Query: **Filter** (`Optional`)
+
 #### Delete One
 
-Delete one CLP version data, based on provided filter.
+Delete one PLC version data, based on provided filter.
 
-- Route: `/clp-version`
+- Route: `/plc/version`
 - Method: `DELETE`
 - Query: **Filter** (`Mandatory`)
