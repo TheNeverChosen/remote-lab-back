@@ -16,12 +16,13 @@ Back-end of Remote-Lab project.
     + [Get by Session](#get-by-session)
     + [Update](#update)
     + [Delete](#delete)
-  * [PLC Version](#clp-version)
+  * [PLC Version](#plc-version)
     + [Create](#create-1)
-    + [Get All](#get-all)
+    + [Get Many](#get-many)
     + [Get One](#get-one)
-    + [Update All](#update-all)
+    + [Update Many](#update-many)
     + [Update One](#update-one)
+    + [Delete Many](#delete-many)
     + [Delete One](#delete-one)
 
 ## Introduction
