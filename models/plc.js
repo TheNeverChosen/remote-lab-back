@@ -49,20 +49,22 @@ const devicesSchema = new Schema({
 }, {versionKey: false, _id: false});
 
 const plcSchema = new Schema({
+  reference:{
+    type: String,
+    trim: true,
+    unique: true,
+    required: [true, 'PLC reference required'],
+    maxlength: [256, 'PLC reference length cannot be greater than 64 characters (32 bytes)'],
+    validate:{
+      validator: v => validator.default.isHexadecimal(v),
+      message: props => `${props.value} is not a valid PLC reference (hexadecimal)`
+    }
+  },
   name:{
     type: String,
     trim: true,
     maxlength: [72, 'PLC name length cannot be greater than 72 characters'],
     required: [true, 'PLC name is required']
-  },
-  reference:{
-    type: String,
-    trim: true,
-    unique: true,
-    validate:{
-      validator: v => validator.isHash(v, 'sha256'),
-      message: props => `${props.value} is not a valid PLC reference`
-    }
   },
   version:{
     type: plcVerSchema,
@@ -72,6 +74,10 @@ const plcSchema = new Schema({
   devices:{
     type: devicesSchema,
     default: ()=>({})
+  },
+  createdAt:{
+    type: Date,
+    required: [true, 'PLC creation date is required']
   }
 }, {versionKey: false, strictQuery: 'throw'});
 

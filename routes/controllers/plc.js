@@ -1,5 +1,6 @@
 const plcSrv = require('../../services/plc');
 const createError = require('http-errors');
+const {flattenObj} = require('../../utils/transform');
 
 async function readMany(req, res){
   const filter = req.query, {projection} = req.queryAdvanced;
@@ -12,6 +13,12 @@ async function readOne(req, res){
   const plcVer = await plcSrv.readOne(filter, projection);
   if(!plcVer) throw createError(404, 'PLC not found');
   res.status(200).json(plcVer);
+}
+
+async function create(req, res){
+  const {reference, version} = req.body;
+  await plcSrv.create(reference, flattenObj(version));
+  res.status(200).end();
 }
 
 async function updateMany(req, res){
@@ -46,4 +53,4 @@ async function deleteOne(req, res){
   res.status(204).end();
 }
 
-module.exports = {readMany, readOne, updateMany, updateOne, deleteMany, deleteOne};
+module.exports = {readMany, readOne, create, updateMany, updateOne, deleteMany, deleteOne};

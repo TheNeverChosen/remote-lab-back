@@ -39,20 +39,20 @@ async function updateOne(req, res){
 }
 
 function setDelPlc(req, res, next){
-  req.delPlc = (req.query.delPlc==='true');
-  delete req.query.delPlc;
+  req.delDependents = (req.query.delDependents==='true');
+  delete req.query.delDependents;
   next();
 }
 
 async function deleteMany(req, res){
-  const {query: filter, delPlc} = req;
-  await plcVerSrv.deleteMany(filter, delPlc);
+  const {query: filter, delDependents} = req;
+  await plcVerSrv.deleteMany(filter, delDependents);
   res.status(204).end();
 }
 
 async function deleteOne(req, res){
-  const {query: filter, delPlc} = req;
-  const {deletedCount} = await plcVerSrv.deleteOne(filter, delPlc);
+  const {query: filter, delDependents} = req;
+  const {deletedCount} = await plcVerSrv.deleteOne(filter, delDependents);
   if(deletedCount<1) throw createError(404, 'PLC version not found');
   res.status(204).end();
 }

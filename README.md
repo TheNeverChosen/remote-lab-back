@@ -271,3 +271,12 @@ Delete one PLC version data, based on provided filter.
 - Route: `/plc/version`
 - Method: `DELETE`
 - Query: **Filter** (`Mandatory`)
+
+```JS
+{
+  name: String,
+  reference: String,
+  version: plcVersion,
+  devices: [plcDevice]
+}
+```

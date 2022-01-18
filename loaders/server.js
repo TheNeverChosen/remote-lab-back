@@ -13,7 +13,7 @@ function httpsCreds(){
     cert: fs.readFileSync(path.resolve(`${env.SSL_PATH}/certificate.crt`))
   };
   if(fs.existsSync(path.resolve(`${env.SSL_PATH}/ca_bundle.crt`)))
-    creds.ca = fs.readFileSync(path.resolve(`${env.SSL_PATH}/ca_bundle.crt`))
+    creds.ca = fs.readFileSync(path.resolve(`${env.SSL_PATH}/ca_bundle.crt`));
 
   return creds;
 }

@@ -11,7 +11,7 @@ module.exports = ()=>{
   router.put('/plc/version/many', plcVerCont.updateMany);
   router.put('/plc/version', noEmptyQuery(), plcVerCont.updateOne);
 
-  router.delete('/plc/version/*', plcVerCont.setDelPlc);
+  router.delete('/plc/version**', plcVerCont.setDelPlc);
   router.delete('/plc/version/many', plcVerCont.deleteMany);
   router.delete('/plc/version', noEmptyQuery(), plcVerCont.deleteOne);
 
