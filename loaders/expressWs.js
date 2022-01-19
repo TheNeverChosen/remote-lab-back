@@ -9,9 +9,6 @@ function configWssPingIsAlive(wss){
   wss.on('connection', function connection(ws){
     ws.isAlive = true;
     ws.on('pong', heartbeat);
-    console.log(`CONEXAO WEBSOCKET!!!\nAntes: ${ws.binaryType}`);
-    ws.binaryType = "arraybuffer";
-    console.log(`Depois: ${ws.binaryType}`);
   });
   
   const interval = setInterval(()=>{

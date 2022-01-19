@@ -14,6 +14,11 @@ async function readOne(filter, projection){
   return await Plc.findOne(filter, projection);
 }
 
+async function exists(filter){
+  if(_isEmpty(filter)) return false;
+  return await Plc.exists(filter);
+}
+
 async function existsVersion(verFilter){
   if(_isEmpty(verFilter) && await Plc.exists({})) return true;
   const plcFilter = flattenObj({version: verFilter});
@@ -21,9 +26,6 @@ async function existsVersion(verFilter){
 }
 
 async function create(reference, plcVerFilter){
-
-  // if(!reference) throw createError(404, "plc validation failed: reference: PLC name is required")
-
   console.log(plcVerFilter);
   let plcVer = await plcVerSrv.readOne(plcVerFilter);
 
@@ -75,4 +77,4 @@ async function deleteVersion(verFilter){
   return await Plc.deleteMany(plcFilter);
 }
 
-module.exports = {readMany, readOne, existsVersion, create, updateMany, updateOne, updateVersion, deleteMany, deleteOne, deleteVersion};
+module.exports = {readMany, readOne, exists, existsVersion, create, updateMany, updateOne, updateVersion, deleteMany, deleteOne, deleteVersion};
