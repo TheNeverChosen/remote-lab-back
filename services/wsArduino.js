@@ -1,7 +1,3 @@
-function arduinoOpen(){
-  console.log('Arduino connected');
-}
-
 /*
 MsgType -> 1 Byte
 
@@ -32,4 +28,4 @@ function arduinoClose(){
   console.log('Arduino graceful disconnect');
 }
 
-module.exports = {arduinoOpen, arduinoMessage, arduinoClose};
+module.exports = {arduinoMessage, arduinoClose};
