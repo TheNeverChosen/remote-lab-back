@@ -1,5 +1,3 @@
-
-
 function arduinoOpen(){
   console.log('Arduino connected');
 }
@@ -17,17 +15,16 @@ const msgCode=Object.freeze({
 });
 
 function arduinoMessage(data, isBinary){
+  console.log('received: ');
   console.log(data);
 
   if(!isBinary){
-    console.log(`NOT BINARY! Received from arduino: ${data}`);
+    console.log(`NOT BINARY! Received from arduino:`);
     this.send('Not binary received');
     return;
   }
 
   console.log('Received binary from Arduino: ');
-  console.log(data);
-  
   this.send('Binary received!');
 }
 
