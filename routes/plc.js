@@ -7,7 +7,7 @@ module.exports = ()=>{
   router.get('/plc/many', plcCont.readMany);
   router.get('/plc/', noEmptyQuery(), plcCont.readOne);
 
-  if(env.NODE_ENV=='development')
+  //if(env.NODE_ENV=='development')
     router.post('/plc', plcCont.create);
 
   router.put('/plc/many', plcCont.updateMany); //only Name

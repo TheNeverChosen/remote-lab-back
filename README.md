@@ -1,4 +1,4 @@
-<style>
+<!-- <style>
   .b{border-radius: 5px; padding: 2px; font-weight: bold;
   text-shadow: 0px 0px 5px black !important;}
   .mand{color: white; background-color: #ff6961;}
@@ -6,8 +6,7 @@
 </style>
 
 <span class='b mand'>Filter</span>
-<span class='b opt'>Projection</span>
-
+<span class='b opt'>Projection</span> -->
 
 # **remote-lab-back**
 Back-end of Remote-Lab project.
@@ -70,6 +69,19 @@ Some data (**child**) in the database may depend on other data (**parent**), e.g
 - **Updating**: all changes will be reproduced in the child's data;
 
 - **Removing**: if there is any dependent on the data to be removed, the system's default behavior is to prevent the action, returning an error/conflict code, such as `409`. However, in some requests, it is possible to force the removal of dependents. For example, when removing **PLC Versions** it is possible to inform a *boolean* parameter `delDependents`. If `delDependents` is set to `true`, all dependents will be removed.
+
+## Device Models
+
+PLCs have several ports where different devices can be connected. Each port has two basic characteristics: `io` (*input* or *output*) and `type` (*digital* or *analog*). These characteristics make it possible to create groups of ports compatible with certain `models` of devices.
+
+Device `models` are used to describe how a device works, how to understand its data and how the Arduino should interact with it.
+
+Depending on the port the device is connected to, there are specific `models` that can be used. See the table below for the `models` supported by each set of ports.
+
+|            |  Digital  |   Analog  |
+|:----------:|:---------:|:---------:|
+|  **Input** | 'GENERIC' | 'GENERIC' |
+| **Output** | 'GENERIC' |           |
 
 ## REST API Features
 
@@ -239,7 +251,7 @@ Returns many PLC versions. A filter can be provided to narrow the results (appli
 
 - Route: `/plc/version/many`
 - Method: `GET`
-- Query: **Filter** (`Optional`), **Projection** (`Optional`)
+- Query: **Filter** (`Optional`), **projection** (`Optional`)
 
 #### Get One
 
@@ -247,11 +259,11 @@ Returns one PLC version, based on provided filter.
 
 - Route: `/plc/version`
 - Method: `GET`
-- Query: **Filter** (`Mandatory`), **Projection** (`Optional`)
+- Query: **Filter** (`Mandatory`), **projection** (`Optional`)
 
 #### Update Many
 
-Update many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
+Updates many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
 
 - Route: `/plc/version/many`
 - Method: `PUT`
@@ -268,7 +280,7 @@ Update many PLC versions. A filter can be provided to narrow the results (applie
 
 #### Update One
 
-Update one PLC version, based on provided filter.
+Updates one PLC version, based on provided filter.
 
 - Route: `/plc/version`
 - Method: `PUT`
@@ -277,7 +289,7 @@ Update one PLC version, based on provided filter.
 
 #### Delete Many
 
-Delete many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided). The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
+Deletes many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided). The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
 
 - Route: `/plc/version/many`
 - Method: `DELETE`
@@ -285,7 +297,7 @@ Delete many PLC versions. A filter can be provided to narrow the results (applie
 
 #### Delete One
 
-Delete one PLC version data, based on provided filter. The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
+Deletes one PLC version data, based on provided filter. The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
 
 - Route: `/plc/version`
 - Method: `DELETE`
@@ -298,7 +310,7 @@ PLC routes handle work related to PLC management.
 - **PLC Schema:**
   ```JS
   {
-    reference: String, //hexadecimal number
+    reference: String, //Hexadecimal number
     name: String,
     version:{          //PLC version Object
       release: String, //Semantic Version (Max Size: 11)
@@ -351,58 +363,79 @@ However, if the server is started in `development` mode, a route for creating PL
 
 #### Get Many
 
-Returns many PLC. A filter can be provided to narrow the results (applies to all items, if not provided).
+Returns many PLCs. A filter can be provided to narrow the results (applies to all items, if not provided).
 
 - Route: `/plc/many`
 - Method: `GET`
-- Query: **Filter** (`Optional`), **Projection** (`Optional`)
+- Query: **Filter** (`Optional`), **projection** (`Optional`)
 
 #### Get One
 
-Returns one PLC version, based on provided filter.
+Returns one PLC, based on provided filter.
 
-- Route: `/plc/version`
+- Route: `/plc`
 - Method: `GET`
-- Query: **Filter** (`Mandatory`), **Projection** (`Optional`)
+- Query: **Filter** (`Mandatory`), **projection** (`Optional`)
 
 #### Update Many
 
-Update many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
+Updates many PLCs. Can update just the name. A filter can be provided to narrow the results (applies to all items, if not provided).
 
-- Route: `/plc/version/many`
+- Route: `/plc/many`
 - Method: `PUT`
 - Query: **Filter** (`Optional`)
 - Body: `Mandatory`
   ```JSON
   {
-    "name": "7.9.2",
-    "input":{
-      "digital": 10
-    }
+    "name": "Genesis"
   }
   ```
 
 #### Update One
 
-Update one PLC version, based on provided filter.
+Updates one PLC version, based on provided filter. Can update just the name.
 
-- Route: `/plc/version`
+- Route: `/plc`
 - Method: `PUT`
 - Query: **Filter** (`Mandatory`)
 - Body: `Mandatory`
 
 #### Delete Many
 
-Delete many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided). The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
+Deletes many PLCs . A filter can be provided to narrow the results (applies to all items, if not provided).
 
-- Route: `/plc/version/many`
+- Route: `/plc/many`
 - Method: `DELETE`
-- Query: **Filter** (`Optional`), **delDependents** (`Optional`)
+- Query: **Filter** (`Optional`)
 
 #### Delete One
 
-Delete one PLC version data, based on provided filter. The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
+Deletes one PLC, based on provided filter.
 
-- Route: `/plc/version`
+- Route: `/plc`
 - Method: `DELETE`
-- Query: **Filter** (`Mandatory`), **delDependents** (`Optional`)
+- Query: **Filter** (`Mandatory`)
+
+
+#### Add Device
+
+Adds a device to a PLC, based on provided filter. In the call of the route, the `io` (*input* or *output*) and `type` (*digital* or *analog*) must be specified. Depending on `io` and `type` there are some valid `models` for the device. See [Device Models](#device-models) for further information.
+
+- Route: `/plc/devices/:io/:type`
+- Method: `POST`
+- Query: **Filter** (`Mandatory`)
+- Body: `Mandatory`
+  ```JSON
+  {
+    "model": "GENERIC",
+    "port": 0
+  }
+  ```
+
+#### Delete Devices
+
+Removes devices from specific ports of a PLC, based on the filter provided. In the call of the route, the `io` (*input* or *output*) and `type` (*digital* or *analog*) must be specified. The string value `ports` must be provided, containing the port numbers (space-separated) to be released.
+
+- Route: `/plc/devices/:io/:type`
+- Method: `DELETE`
+- Query: **Filter** (`Mandatory`), `ports` (**Mandatory**)
