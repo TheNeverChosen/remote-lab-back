@@ -26,10 +26,8 @@ async function existsVersion(verFilter){
 }
 
 async function create(reference, plcVerFilter){
-  console.log(plcVerFilter);
   let plcVer = await plcVerSrv.readOne(plcVerFilter);
 
-  console.log(plcVer);
   if(!plcVer) throw createError(404, 'PLC version not found');
   else if(!(plcVer instanceof mongoose.Document)) throw (500, 'Unexpected error while searching PLC version');
   else plcVer = plcVer.toObject();
@@ -40,8 +38,6 @@ async function create(reference, plcVerFilter){
     version: plcVer,
     createdAt: new Date()
   };
-
-  console.log(plc);
 
   await Plc.create(plc);
 }
@@ -56,12 +52,6 @@ async function updateOne(filter, updatedPlc){
   return await Plc.updateOne(filter, updatedPlc);
 }
 
-async function updateVersion(verFilter, updatedPlcVer){
-  const plcFilter = flattenObj({version: verFilter});
-  const updatedPlc = flattenObj({version: updatedPlcVer});
-  return await Plc.updateMany(plcFilter, updatedPlc);
-}
-
 async function deleteMany(filter){
   return await Plc.deleteMany(filter);
 }
@@ -70,11 +60,4 @@ async function deleteOne(filter){
   return await Plc.deleteOne(filter);
 }
 
-async function deleteVersion(verFilter){
-  if(_isEmpty(verFilter) && await Plc.exists({})) return Plc.deleteMany({});
-  const plcFilter = flattenObj({version: verFilter});
-  console.log(plcFilter);
-  return await Plc.deleteMany(plcFilter);
-}
-
-module.exports = {readMany, readOne, exists, existsVersion, create, updateMany, updateOne, updateVersion, deleteMany, deleteOne, deleteVersion};
+module.exports = {readMany, readOne, exists, existsVersion, create, updateMany, updateOne, deleteMany, deleteOne};

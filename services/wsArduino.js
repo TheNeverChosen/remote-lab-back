@@ -12,6 +12,8 @@ const msgCode=Object.freeze({
   IDENTIFICATION: 0
 });
 
+const loggedClps = [];
+
 async function arduinoIdentification(data){
   if(data.length<4) throw new Error('ERROR: Invalid version (Insufficient Bytes)');
   else if(data.lenght<5) return new Error('ERROR: Invalid reference (Empty)');
@@ -20,8 +22,9 @@ async function arduinoIdentification(data){
   const version = {release};
 
   let reference = "";
-  for(let i=4;i<data.length;i++)
+  for(let i=4;i<data.length;i++){
     reference += data[i].toString(16).padStart(2, '0');
+  }
 
   console.log('VERSION:');
   console.log(version);
@@ -32,7 +35,7 @@ async function arduinoIdentification(data){
     console.log('CLP JA CADASTRADO NO SISTEMA!');
     return;
   }
-
+  
   await plcSrv.create(reference, flattenObj(version));
   console.log('NOVO CLP CADASTRADO NO SISTEMA');
 }
@@ -51,7 +54,10 @@ async function arduinoMessage(data){
       switch(code){
         case msgCode.IDENTIFICATION:
           await arduinoIdentification(data);
-          this.send('Successful Connected'); break;
+          const arr = new Uint8Array(3);
+          arr[0] = 34; arr[1] = 3; arr[2] = 27;
+          this.send(arr);
+          break;
         default:
           this.send('ERROR: Invalid Message Code');
       }

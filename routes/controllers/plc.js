@@ -15,6 +15,7 @@ async function readOne(req, res){
   res.status(200).json(plcVer);
 }
 
+//Development Only
 async function create(req, res){
   const {reference, version} = req.body;
   await plcSrv.create(reference, flattenObj(version));

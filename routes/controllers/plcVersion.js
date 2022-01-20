@@ -19,11 +19,18 @@ async function create(req, res){
   res.status(200).end();
 }
 
+function updateResultHandler(result){
+  const msg = "Bad PLC version Updating:";
+  if(!result.primary || !result.primary.acknowledged)
+    throw createError(400, `${msg} error while updating version`);
+  if(!result.dependents || !result.dependents.acknowledged)
+    throw createError(400, `${msg} error while updating version dependents`);
+}
+
 async function updateMany(req, res){
   const filter = req.query, updatedPlcVer = req.bodyFlat;
   const result = await plcVerSrv.updateMany(filter, updatedPlcVer);
-
-  if(!result.acknowledged) throw createError(400, 'Bad PLC version Updating');
+  updateResultHandler(result);
 
   res.status(204).end();
 }
@@ -31,14 +38,13 @@ async function updateMany(req, res){
 async function updateOne(req, res){
   const filter = req.query, updatedPlcVer = req.bodyFlat;
   const result = await plcVerSrv.updateOne(filter, updatedPlcVer);
-
-  if(!result.acknowledged) throw createError(400, 'Bad PLC version Updating');
-  if(result.matchedCount<1) throw createError(404, 'PLC version not found');
+  updateResultHandler(result);
+  if(result.primary.matchedCount<1) throw createError(404, 'PLC version not found');
 
   res.status(204).end();
 }
 
-function setDelPlc(req, res, next){
+function setDelDependents(req, res, next){
   req.delDependents = (req.query.delDependents==='true');
   delete req.query.delDependents;
   next();
@@ -47,14 +53,16 @@ function setDelPlc(req, res, next){
 async function deleteMany(req, res){
   const {query: filter, delDependents} = req;
   await plcVerSrv.deleteMany(filter, delDependents);
+
   res.status(204).end();
 }
 
 async function deleteOne(req, res){
   const {query: filter, delDependents} = req;
-  const {deletedCount} = await plcVerSrv.deleteOne(filter, delDependents);
-  if(deletedCount<1) throw createError(404, 'PLC version not found');
+  const result = await plcVerSrv.deleteOne(filter, delDependents);
+  if(result.primary.deletedCount<1) throw createError(404, 'PLC version not found');
+
   res.status(204).end();
 }
 
-module.exports = {readMany, readOne, create, updateMany, deleteMany, setDelPlc, updateOne, deleteOne};
+module.exports = {readMany, readOne, create, updateMany, deleteMany, setDelDependents, updateOne, deleteOne};
