@@ -427,7 +427,7 @@ Adds a device to a PLC, based on provided filter. In the call of the route, the 
 
 - Route: `/plc/devices/:io/:type`
 - Method: `POST`
-- Query: `Filter` (*Mandatory*)
+- Query: `Filter` (**Mandatory**)
 - Body: (**Mandatory**)
   ```JSON
   {
