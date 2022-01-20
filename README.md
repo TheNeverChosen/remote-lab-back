@@ -1,20 +1,12 @@
-<!-- <style>
-  .b{border-radius: 5px; padding: 2px; font-weight: bold;
-  text-shadow: 0px 0px 5px black !important;}
-  .mand{color: white; background-color: #ff6961;}
-  .opt{color: white; background-color: yellow !important;}
-</style>
-
-<span class='b mand'>Filter</span>
-<span class='b opt'>Projection</span> -->
-
-# **remote-lab-back**
+# **Remote-Lab back-end**
 Back-end of Remote-Lab project.
 
 - [Introduction](#introduction)
 - [Filtering](#filtering)
 - [Projection](#projection)
-- [Features](#features)
+- [Data Dependence: Updating / Removal](#data-dependence--updating---removal)
+- [Device Models](#device-models)
+- [REST API Features](#rest-api-features)
   * [Auth](#auth)
     + [Login](#login)
     + [Logout](#logout)
@@ -34,13 +26,26 @@ Back-end of Remote-Lab project.
     + [Update One](#update-one)
     + [Delete Many](#delete-many)
     + [Delete One](#delete-one)
+  * [PLC](#plc)
+    + [Create](#create-2)
+    + [Get Many](#get-many-1)
+    + [Get One](#get-one-1)
+    + [Update Many](#update-many-1)
+    + [Update One](#update-one-1)
+    + [Delete Many](#delete-many-1)
+    + [Delete One](#delete-one-1)
+    + [Add Device](#add-device)
+    + [Delete Devices](#delete-devices)
 
 ## Introduction
 
-This is a RESTful web API, made in NodeJs with express.
+This is the back-end for the project **Remote-Lab**. The project seeks to provide a WEB tool to teach automation and PLC programming with Ladder. Arduino is being used to run Ladder diagrams, as a low-cost emulated PLC.
+
+The back-end provides a HTTP server for [WebSocket](#https://en.wikipedia.org/wiki/WebSocket#:~:text=WebSocket%20is%20a%20computer%20communications,WebSocket%20is%20distinct%20from%20HTTP.) connections and a HTTPS server for a RESTful web API, made with express.
+
 All requests, on all routes and methods, work with [JSON](https://www.json.org/json-en.html) data and return semantic [HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 
-The API features can be accessed by specific Routes and HTTP methods. Depending on the feature, it's possible (or required) to send data by the `query string` for filtering, or by the `body`. This information will be in the description of each API feature [below](#features).
+The API features can be accessed by specific Routes and HTTP methods. Depending on the feature, it's possible (or required) to send data by the `query string` for filtering, or by the `body`. This information will be in the description of each API feature [below]((#rest-api-features)).
 
 If the feature description does not mention the optional or mandatory submission of certain data (e.g. query string, body), then that specific feature does not support it and will ignore it if submitted.
 
@@ -62,7 +67,7 @@ If the required field is inside a nested object, [dot notation](https://docs.mon
 
 If no projection is provided, the API will return the data with all fields.
 
-## Data Dependents Updating / Removal
+## Data Dependence: Updating / Removal
 
 Some data (**child**) in the database may depend on other data (**parent**), e.g. PLCs, which are dependent on some PLC version. In that cases, updating/removing the **parent** data will affect the **child** in different ways.
 
@@ -438,4 +443,4 @@ Removes devices from specific ports of a PLC, based on the filter provided. In t
 
 - Route: `/plc/devices/:io/:type`
 - Method: `DELETE`
-- Query: **Filter** (`Mandatory`), `ports` (**Mandatory**)
+- Query: `Filter` (**Mandatory**), `ports` (**Mandatory**)
