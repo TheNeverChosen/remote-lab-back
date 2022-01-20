@@ -9,11 +9,12 @@ async function addOneDevice(req, res){ //push 1 device to array
 
 async function deleteDevices(req, res){ //delete devices from array
   const {query} = req, {io, type} = req.params;
-  const ports = query.ports; delete query.ports;
+  const {ports} = query; delete query.ports;
 
   const result = await plcDevSrv.deleteDevices(query, io, type, ports);
   
   if(!result.acknowledged) throw createError(400, 'Bad PLC device Delete');
+  if(result.matchedCount<1) throw createError(404, 'PLC not found');
 
   res.status(200).end(); 
 }
