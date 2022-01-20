@@ -45,7 +45,7 @@ The back-end provides a HTTP server for [WebSocket](#https://en.wikipedia.org/wi
 
 All requests, on all routes and methods, work with [JSON](https://www.json.org/json-en.html) data and return semantic [HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 
-The API features can be accessed by specific Routes and HTTP methods. Depending on the feature, it's possible (or required) to send data by the `query string` for filtering, or by the `body`. This information will be in the description of each API feature [below]((#rest-api-features)).
+The API features can be accessed by specific Routes and HTTP methods. Depending on the feature, it's possible (or required) to send data by the `query string` for filtering, or by the `body`. This information will be in the description of each API feature [below](#rest-api-features).
 
 If the feature description does not mention the optional or mandatory submission of certain data (e.g. query string, body), then that specific feature does not support it and will ignore it if submitted.
 
@@ -172,7 +172,6 @@ Return all users.
 - Route: `/user`
 - Method: `GET`
 
-
 #### Get by ID
 
 Return one user by ID.
@@ -236,7 +235,7 @@ Creates new PLC version.
 
 - Route: `/plc/version`
 - Method: `POST`
-- Body: `Mandatory`
+- Body: (**Mandatory**)
   ```JSON
   {
     "release": "1.2.0",
@@ -256,7 +255,7 @@ Returns many PLC versions. A filter can be provided to narrow the results (appli
 
 - Route: `/plc/version/many`
 - Method: `GET`
-- Query: **Filter** (`Optional`), **projection** (`Optional`)
+- Query: `Filter` (**Optional**), `projection` (**Optional**)
 
 #### Get One
 
@@ -264,7 +263,7 @@ Returns one PLC version, based on provided filter.
 
 - Route: `/plc/version`
 - Method: `GET`
-- Query: **Filter** (`Mandatory`), **projection** (`Optional`)
+- Query: `Filter` (**Mandatory**), `projection` (**Optional**)
 
 #### Update Many
 
@@ -272,8 +271,8 @@ Updates many PLC versions. A filter can be provided to narrow the results (appli
 
 - Route: `/plc/version/many`
 - Method: `PUT`
-- Query: **Filter** (`Optional`)
-- Body: `Mandatory`
+- Query: `Filter` (**Optional**)
+- Body: (**Mandatory**)
   ```JSON
   {
     "name": "7.9.2",
@@ -289,8 +288,8 @@ Updates one PLC version, based on provided filter.
 
 - Route: `/plc/version`
 - Method: `PUT`
-- Query: **Filter** (`Mandatory`)
-- Body: `Mandatory`
+- Query: `Filter` (**Mandatory**)
+- Body: (**Mandatory**)
 
 #### Delete Many
 
@@ -298,7 +297,7 @@ Deletes many PLC versions. A filter can be provided to narrow the results (appli
 
 - Route: `/plc/version/many`
 - Method: `DELETE`
-- Query: **Filter** (`Optional`), **delDependents** (`Optional`)
+- Query: `Filter` (**Optional**), `delDependents` (**Optional**)
 
 #### Delete One
 
@@ -306,7 +305,7 @@ Deletes one PLC version data, based on provided filter. The Boolean value `delDe
 
 - Route: `/plc/version`
 - Method: `DELETE`
-- Query: **Filter** (`Mandatory`), **delDependents** (`Optional`)
+- Query: `Filter` (**Mandatory**), `delDependents` (**Optional**)
 
 ### PLC
 
@@ -356,7 +355,7 @@ However, if the server is started in `development` mode, a route for creating PL
 
 - Route: `/plc`
 - Method: `POST`
-- Body: `Mandatory`
+- Body: (**Mandatory**)
   ```JSON
   {
     "reference": "7b18",
@@ -372,7 +371,7 @@ Returns many PLCs. A filter can be provided to narrow the results (applies to al
 
 - Route: `/plc/many`
 - Method: `GET`
-- Query: **Filter** (`Optional`), **projection** (`Optional`)
+- Query: `Filter` (**Optional**), `projection` (**Optional**)
 
 #### Get One
 
@@ -380,7 +379,7 @@ Returns one PLC, based on provided filter.
 
 - Route: `/plc`
 - Method: `GET`
-- Query: **Filter** (`Mandatory`), **projection** (`Optional`)
+- Query: `Filter` (**Mandatory**), `projection` (**Optional**)
 
 #### Update Many
 
@@ -388,8 +387,8 @@ Updates many PLCs. Can update just the name. A filter can be provided to narrow 
 
 - Route: `/plc/many`
 - Method: `PUT`
-- Query: **Filter** (`Optional`)
-- Body: **_Mandatory_**
+- Query: `Filter` (**Optional**)
+- Body: (**Mandatory**)
   ```JSON
   {
     "name": "Genesis"
@@ -402,8 +401,8 @@ Updates one PLC version, based on provided filter. Can update just the name.
 
 - Route: `/plc`
 - Method: `PUT`
-- Query: **Filter** (`Mandatory`)
-- Body: `Mandatory`
+- Query: `Filter` (**Mandatory**)
+- Body: (**Mandatory**)
 
 #### Delete Many
 
@@ -411,7 +410,7 @@ Deletes many PLCs . A filter can be provided to narrow the results (applies to a
 
 - Route: `/plc/many`
 - Method: `DELETE`
-- Query: **Filter** (`Optional`)
+- Query: `Filter` (**Optional**)
 
 #### Delete One
 
@@ -419,7 +418,7 @@ Deletes one PLC, based on provided filter.
 
 - Route: `/plc`
 - Method: `DELETE`
-- Query: **Filter** (`Mandatory`)
+- Query: `Filter` (**Mandatory**)
 
 
 #### Add Device
@@ -429,7 +428,7 @@ Adds a device to a PLC, based on provided filter. In the call of the route, the 
 - Route: `/plc/devices/:io/:type`
 - Method: `POST`
 - Query: `Filter` (*Mandatory*)
-- Body: *Mandatory*
+- Body: (**Mandatory**)
   ```JSON
   {
     "model": "GENERIC",
