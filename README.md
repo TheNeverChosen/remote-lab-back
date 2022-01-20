@@ -1,3 +1,14 @@
+<style>
+  .b{border-radius: 5px; padding: 2px; font-weight: bold;
+  text-shadow: 0px 0px 5px black !important;}
+  .mand{color: white; background-color: #ff6961;}
+  .opt{color: white; background-color: yellow !important;}
+</style>
+
+<span class='b mand'>Filter</span>
+<span class='b opt'>Projection</span>
+
+
 # **remote-lab-back**
 Back-end of Remote-Lab project.
 
@@ -52,7 +63,15 @@ If the required field is inside a nested object, [dot notation](https://docs.mon
 
 If no projection is provided, the API will return the data with all fields.
 
-## Features
+## Data Dependents Updating / Removal
+
+Some data (**child**) in the database may depend on other data (**parent**), e.g. PLCs, which are dependent on some PLC version. In that cases, updating/removing the **parent** data will affect the **child** in different ways.
+
+- **Updating**: all changes will be reproduced in the child's data;
+
+- **Removing**: if there is any dependent on the data to be removed, the system's default behavior is to prevent the action, returning an error/conflict code, such as `409`. However, in some requests, it is possible to force the removal of dependents. For example, when removing **PLC Versions** it is possible to inform a *boolean* parameter `delDependents`. If `delDependents` is set to `true`, all dependents will be removed.
+
+## REST API Features
 
 ### Auth
 
@@ -258,25 +277,132 @@ Update one PLC version, based on provided filter.
 
 #### Delete Many
 
-Delete many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
+Delete many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided). The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
 
 - Route: `/plc/version/many`
 - Method: `DELETE`
-- Query: **Filter** (`Optional`)
+- Query: **Filter** (`Optional`), **delDependents** (`Optional`)
 
 #### Delete One
 
-Delete one PLC version data, based on provided filter.
+Delete one PLC version data, based on provided filter. The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
 
 - Route: `/plc/version`
 - Method: `DELETE`
-- Query: **Filter** (`Mandatory`)
+- Query: **Filter** (`Mandatory`), **delDependents** (`Optional`)
 
-```JS
-{
-  name: String,
-  reference: String,
-  version: plcVersion,
-  devices: [plcDevice]
-}
-```
+### PLC
+
+PLC routes handle work related to PLC management.
+
+- **PLC Schema:**
+  ```JS
+  {
+    reference: String, //hexadecimal number
+    name: String,
+    version:{          //PLC version Object
+      release: String, //Semantic Version (Max Size: 11)
+      input:{
+        digital: Number,
+        analog: Number
+      },
+      output:{
+        digital: Number,
+        analog: Number
+      },
+      createdAt: Date
+    },
+    input:{
+      digital: [Device],
+      analog: [Device]
+    },
+    output:{
+      digital: [Device],
+      analog: [Device]
+    }
+  }
+  ```
+
+- **Device Schema:**
+  ```JS
+  {
+    model: String,
+    port: Number
+  }
+  ```
+
+#### Create
+
+The creation of the PLC is not managed directly by the REST API. Instead, PLCs are registered and logged in automatically, via websockets connection.
+
+However, if the server is started in `development` mode, a route for creating PLCs for testing will be available.
+
+- Route: `/plc`
+- Method: `POST`
+- Body: `Mandatory`
+  ```JSON
+  {
+    "reference": "7b18",
+    "version":{
+      "release": "1.2.0"
+    }
+  }
+  ```
+
+#### Get Many
+
+Returns many PLC. A filter can be provided to narrow the results (applies to all items, if not provided).
+
+- Route: `/plc/many`
+- Method: `GET`
+- Query: **Filter** (`Optional`), **Projection** (`Optional`)
+
+#### Get One
+
+Returns one PLC version, based on provided filter.
+
+- Route: `/plc/version`
+- Method: `GET`
+- Query: **Filter** (`Mandatory`), **Projection** (`Optional`)
+
+#### Update Many
+
+Update many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided).
+
+- Route: `/plc/version/many`
+- Method: `PUT`
+- Query: **Filter** (`Optional`)
+- Body: `Mandatory`
+  ```JSON
+  {
+    "name": "7.9.2",
+    "input":{
+      "digital": 10
+    }
+  }
+  ```
+
+#### Update One
+
+Update one PLC version, based on provided filter.
+
+- Route: `/plc/version`
+- Method: `PUT`
+- Query: **Filter** (`Mandatory`)
+- Body: `Mandatory`
+
+#### Delete Many
+
+Delete many PLC versions. A filter can be provided to narrow the results (applies to all items, if not provided). The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
+
+- Route: `/plc/version/many`
+- Method: `DELETE`
+- Query: **Filter** (`Optional`), **delDependents** (`Optional`)
+
+#### Delete One
+
+Delete one PLC version data, based on provided filter. The Boolean value `delDependents` can be provided to force the deletion of dependent PLCs.
+
+- Route: `/plc/version`
+- Method: `DELETE`
+- Query: **Filter** (`Mandatory`), **delDependents** (`Optional`)
