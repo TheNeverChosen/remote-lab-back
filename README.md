@@ -389,7 +389,7 @@ Updates many PLCs. Can update just the name. A filter can be provided to narrow 
 - Route: `/plc/many`
 - Method: `PUT`
 - Query: **Filter** (`Optional`)
-- Body: `Mandatory`
+- Body: **Mandatory**
   ```JSON
   {
     "name": "Genesis"
@@ -428,8 +428,8 @@ Adds a device to a PLC, based on provided filter. In the call of the route, the 
 
 - Route: `/plc/devices/:io/:type`
 - Method: `POST`
-- Query: **Filter** (`Mandatory`)
-- Body: `Mandatory`
+- Query: `Filter` (*Mandatory*)
+- Body: *Mandatory*
   ```JSON
   {
     "model": "GENERIC",
