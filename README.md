@@ -389,7 +389,7 @@ Updates many PLCs. Can update just the name. A filter can be provided to narrow 
 - Route: `/plc/many`
 - Method: `PUT`
 - Query: **Filter** (`Optional`)
-- Body: **Mandatory**
+- Body: **_Mandatory_**
   ```JSON
   {
     "name": "Genesis"
