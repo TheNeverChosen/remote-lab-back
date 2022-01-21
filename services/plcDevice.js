@@ -22,8 +22,8 @@ async function addOneDevice(filter, io, type, newDev){
     throw createError(400,
       `Invalid device port: expected ${type} ${io} port number in [0,${qtPorts-1}], but received ${newDev.port}`);
 
-  const targetDevs = plc.devices[io][type]; console.log(targetDevs);
-  const i = _sortedIndexBy(targetDevs, newDev, (val)=>val.port); console.log(i);
+  const targetDevs = plc.devices[io][type];
+  const i = _sortedIndexBy(targetDevs, newDev, (val)=>val.port);
       
   if(newDev.port<targetDevs.length && targetDevs[i].port==newDev.port) //check conflicting newDev.port
     throw createError(409, `Invalid device port: port ${newDev.port} is already in use`);
