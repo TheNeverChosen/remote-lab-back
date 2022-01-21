@@ -25,7 +25,7 @@ async function addOneDevice(filter, io, type, newDev){
   const targetDevs = plc.devices[io][type];
   const i = _sortedIndexBy(targetDevs, newDev, (val)=>val.port);
       
-  if(newDev.port<targetDevs.length && targetDevs[i].port==newDev.port) //check conflicting newDev.port
+  if(i<targetDevs.length && targetDevs[i].port==newDev.port) //check conflicting newDev.port
     throw createError(409, `Invalid device port: port ${newDev.port} is already in use`);
 
   targetDevs.splice(i, 0, newDev); //ordered inserting by port
