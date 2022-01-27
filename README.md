@@ -328,13 +328,15 @@ PLC routes handle work related to PLC management.
       },
       createdAt: Date
     },
-    input:{
-      digital: [Device],
-      analog: [Device]
-    },
-    output:{
-      digital: [Device],
-      analog: [Device]
+    devices:{
+      input:{
+        digital: [Device],
+        analog: [Device]
+      },
+      output:{
+        digital: [Device],
+        analog: [Device]
+      }
     }
   }
   ```
