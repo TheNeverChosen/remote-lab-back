@@ -11,7 +11,8 @@ const arduinoTranslate = require('./arduinoTranslate');
 const {env} = require('../utils/env');
 
 const msgCodes=Object.freeze({
-  IDENTIFICATION: 0
+  IDENTIFICATION: 0,
+  PROTOCOL: 1
 });
 
 const onlinePlcs = []; //array of online PLC wsClients
@@ -50,6 +51,7 @@ async function wsReceiveMessage(data){
       case msgCodes.IDENTIFICATION:
         const plc = arduinoTranslate.arduinoDetails(data, 1);
         await arduinoLogin(this, plc);
+        console.log(onlinePlcs);
         this.send('Successful login');
         break;
       default:

@@ -2,7 +2,7 @@ const _sortedIndexBy = require('lodash/sortedIndexBy');
 const _has = require ('lodash/has');
 const {env, deviceModels, IOs, types, IOTypeModels} = require('../utils/env');
 const createError = require('http-errors');
-const {endianesses, uintToArrayBytes, binaryStrToBytes} = require('../utils/transform');
+const {endianesses, uintToArrayBytes, binaryStrToBytes, intQtDigits} = require('../utils/transform');
 
 function arduinoDetails(data, iStart){
   if(typeof iStart!='number') iStart=0;
@@ -47,7 +47,7 @@ function genDevWithVars(devices, devVars, qtVars){
       const varArr = devVars[io][type];    //variables array
       
       for(const v of varArr){ //iterating over variables array
-        if(!(v.id>=0 && v.id<qtVars)) throw createError(404, `Invalid variable id: expected variable id in [0,${qtVars}], but received ${v.id}, inside of ${type} ${io}.`);
+        if(!(v.id>=0 && v.id<qtVars)) throw createError(404, `invalid variable ID: expected variable id in [0,${qtVars-1}], but received ${v.id}, inside of ${type} ${io}.`);
         if(checkVars[v.id]) throw createError(404, `ERROR: duplicated id (${v.id}).`);
         else checkVars[v.id]=true;
 
@@ -122,8 +122,65 @@ function parseDevWithVars(devWithVars){
   return devVarArr;
 }
 
-function parseDiagram(diagram){
-  return [];
+const diagSymbols=Object.freeze({
+  '{': 1,
+  '}': 2,
+  '[': 3,
+  ']': 4,
+  '(': 5,
+  ')': 6
+});
+const diagRelays = Object.freeze({
+  'CA': 11,
+  'CF': 12,
+  'BA': 13,
+  'BF': 14
+});
+
+function parseDiagram(diagram, qtVars){
+  if(typeof diagram!='string')
+    throw createError(404, 'ERROR: diagram must be a string');
+  
+  diagram.replace(' ', ''); //removing all spaces
+  diagram.toUpperCase();    //Diagram toUpperCase
+
+  const res=[];
+  const maxVarChars = intQtDigits(qtVars, true)+1;
+
+  for(let i=0, toJump=0;i<diagram.length;i+=toJump, toJump=0){
+    for(const symbol in diagSymbols){
+      if(diagram.startsWith(symbol, i)){
+        res.push(diagSymbols[symbol]);
+        toJump = symbol.length;
+        break;
+      }
+    }
+    if(toJump>0) continue;
+    
+    for(const relay in diagRelays){
+      if(diagram.startsWith(relay, i)){
+        res.push(diagRelays[relay]);
+        toJump = relay.length;
+
+        const numberI = i+toJump;
+        const vId = parseInt(diagram.substring(numberI, numberI+maxVarChars));
+        if(isNaN(vId))
+          throw createError(404, `ERROR: invalid variable ID (${vId}) after relay, at index (${numberI})`);
+        if(!(vId>=0 && vId<qtVars))
+          throw createError(404, `Invalid variable ID: expected a number in [0,${qtVars-1}], but received (${vId}) on diagram at index (${numberI})`);
+        
+        res.push(vId);
+        toJump += intQtDigits(vId);
+
+        break;
+      }
+    }
+
+    if(!(toJump>0))
+      throw createError(404, `ERROR: can\'t parse diagram char (${diagram[i]}) at index (${i}).`);
+  }
+
+  return res;
 }
 
 function clientToArduinoProtocol(plc, clientProtocol, atStart){
@@ -132,16 +189,16 @@ function clientToArduinoProtocol(plc, clientProtocol, atStart){
   else
     atStart = (typeof atStart=='number') ? [atStart] : [];
 
-  const {qtVars, devVars} = clientProtocol;
+  const {qtVars, devVars, diagram} = clientProtocol;
 
   if(!(typeof qtVars=='number' && qtVars>=0 && qtVars<=env.PLC_MAX_VARS))
     throw createError(404, `Invalid qtVars: expected qtVars as a number in [0,${env.PLC_MAX_VARS}], but received (${qtVars}).`);
 
   const {totalDevices, totalDevVars, devWithVars} = genDevWithVars(plc.devices, devVars, qtVars);
   const devVarArr = parseDevWithVars(devWithVars);
-  const diagram = parseDiagram(clientProtocol.diagram);
+  const parsedDiagram = parseDiagram(diagram, qtVars);
 
-  return {qtVars: clientProtocol.qtVars, totalDevVars, totalDevices, devWithVars, devVarArr, diagram: clientProtocol.diagram, parsedDiagram: diagram, result:new Uint8Array([...atStart, totalDevices, qtVars, ...devVarArr, ...diagram])};
+  return {qtVars, totalDevVars, totalDevices, devWithVars, devVarArr, diagram, parsedDiagram, result:new Uint8Array([...atStart, totalDevices, qtVars, ...devVarArr, ...parsedDiagram])};
 }
 
 module.exports = {arduinoDetails, clientToArduinoProtocol};

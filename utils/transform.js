@@ -57,7 +57,6 @@ function uintToArrayBytes(x, endianess, fixedBytes){
   }
 
   const arr = new Uint8Array(qtBytes);
-
   switch(endianess){
     case endianesses.BIG:
       for(let i=qtBytes-1;i>=0;i--, x>>=8)
@@ -86,4 +85,14 @@ function binaryStrToBytes(str){
   return uintToArrayBytes(parseInt(str, 2), endianesses.BIG);
 }
 
-module.exports={flattenObj, expandObj, endianesses, uintToArrayBytes, binaryStrToBytes};
+function intQtDigits(x, notCountMinus){
+  if(typeof x != 'number' || !isInteger(x)) return null;
+  
+  const plus = 1 + (x<0 && !notCountMinus) ? 1:0;
+
+  return (x!=0 
+    ? Math.floor(Math.log10(Math.abs(x)))
+    : 0) + plus;
+}
+
+module.exports={flattenObj, expandObj, endianesses, uintToArrayBytes, binaryStrToBytes, intQtDigits};
