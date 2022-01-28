@@ -4,14 +4,14 @@ const _sortedIndexBy = require('lodash/sortedIndexBy');
 const createError = require('http-errors');
 
 //Devices PLC (Applies for just ONE PLC at time)==================
-async function addOneDevice(filter, io, type, newDev){
+async function addOneDevice(plcFilter, io, type, newDev){
   if(!IOs.includes(io)) throw createError(400, 'Invalid IO');
   if(!types.includes(type)) throw createError(400, 'Invalid Type');
   if(typeof newDev != 'object') throw createError(400, 'Device must be an object');
 
   const path = `${io}.${type}`;
 
-  const plc = await Plc.findOne(filter, `version.${path} devices.${path}`);
+  const plc = plcFilter ? await Plc.findOne(plcFilter, `version.${path} devices.${path}`) : null;
   if(!plc) throw createError(404, 'PLC not found');
 
   const qtPorts = plc.version[io][type];
@@ -33,13 +33,13 @@ async function addOneDevice(filter, io, type, newDev){
   await plc.save();
 }
 
-async function deleteDevices(filter, io, type, ports){
+async function deleteDevices(plcFilter, io, type, ports){
   if(!IOs.includes(io)) throw createError(400, 'Invalid IO');
   if(!types.includes(type)) throw createError(400, 'Invalid Type');
   if(typeof ports === 'string') ports = ports.split(' ');
   if(!Array.isArray(ports)) throw createError(400, 'Invalid ports definition');
   
-  return await Plc.updateMany(filter,{
+  return await Plc.updateMany(plcFilter,{
     $pull:{
       [`devices.${io}.${type}`]:{
         port:{

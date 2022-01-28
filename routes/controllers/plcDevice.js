@@ -2,8 +2,8 @@ const plcDevSrv = require('../../services/plcDevice');
 const createError = require('http-errors');
 
 async function addOneDevice(req, res){ //push 1 device to array
-  const filter = req.query, {io, type} = req.params, newDev = req.body;
-  await plcDevSrv.addOneDevice(filter, io, type, newDev);
+  const plcFilter = req.query, {io, type} = req.params, newDev = req.body;
+  await plcDevSrv.addOneDevice(plcFilter, io, type, newDev);
   res.status(200).end();
 }
 

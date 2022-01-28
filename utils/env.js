@@ -16,29 +16,37 @@ module.exports = {
     WS_PING_TIME: penv.WS_PING_TIME,
     HTTP_PORT: penv.HTTP_PORT,
     HTTPS_PORT: penv.HTTPS_PORT,
+    PLC_MAX_PORTS: 256,
+    PLC_MAX_VARS: 256,
+    PLC_MAX_AL_DIV_VAL: 500
   },
   roles: ['MASTER', 'ADMIN', 'DEFAULT'],
   IOs: ['input', 'output'],
   types: ['digital', 'analog'],
+  IOTypeModels: Object.freeze({
+    IO_IN_DG_GEN: 1,
+    IO_IN_AL_GEN: 101, 
+    IO_OUT_DG_GEN: 201
+  }),
   deviceModels: {
     input:{
       digital:{
         models: ['GENERIC'],
-        typeModels: [{name: 'IO_IN_DG_GEN', code:1}]
+        IOTypeModels: [{name: 'IO_IN_DG_GEN', code:1}]
       },
       analog:{
         models: ['GENERIC'],
-        typeModels: [{name: 'IO_IN_AL_GEN', code: 101}]
+        IOTypeModels: [{name: 'IO_IN_AL_GEN', code: 101}]
       }
     },
     output:{
       digital:{
         models: ['GENERIC'],
-        typeModels: [{name: 'IO_OUT_DG_GEN', code: 201}]
+        IOTypeModels: [{name: 'IO_OUT_DG_GEN', code: 201}]
       },
       analog:{
         models: [],
-        typeModels: []
+        IOTypeModels: []
       }
     }
   }

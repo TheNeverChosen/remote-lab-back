@@ -3,7 +3,8 @@ const authRouter = require('./auth'),
   userRouter = require('./user'),
   plcRouter = require('./plc'),
   plcVerRouter = require('./plcVersion'),
-  plcDevRouter = require('./plcDevice');
+  plcDevRouter = require('./plcDevice'),
+  plcProgRouter = require('./plcProgram');
 const {advancedQuery, flattenBody} = require('./controllers/middles');
 
 module.exports = ()=>{
@@ -14,6 +15,7 @@ module.exports = ()=>{
   router.use(plcRouter());
   router.use(plcVerRouter());
   router.use(plcDevRouter());
+  router.use(plcProgRouter());
 
   return router;
 };

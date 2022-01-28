@@ -1,19 +1,25 @@
 const {mongoose} = require('../loaders/mongo');
 const {Schema} = mongoose;
 const validator = require('validator');
+const {env} = require('../utils/env');
 
-const ioSchema = new Schema({
-  digital:{
-    type: Number,
-    min: [0, 'The minimum number of digital inputs is 0'],
-    default: 0
-  },
-  analog:{
-    type: Number,
-    min: [0, 'The minimum number of analog inputs is 0'],
-    default: 0
-  }
-}, {versionKey: false, _id: false});
+
+function ioSchema(io){
+  return new Schema({
+    digital:{
+      type: Number,
+      min: [0, `The minimum number of digital ${io} is 0`],
+      max:  [env.PLC_MAX_PORTS, `The maximum number of digital ${io} is ${env.PLC_MAX_PORTS}`],
+      default: 0
+    },
+    analog:{
+      type: Number,
+      min: [0, `The minimum number of analog ${io} is 0`],
+      max:  [env.PLC_MAX_PORTS, `The maximum number of analog ${io} is ${env.PLC_MAX_PORTS}`],
+      default: 0
+    }
+  }, {versionKey: false, _id: false});
+}
 
 const plcVerSchema = new Schema({
   release:{
@@ -28,11 +34,11 @@ const plcVerSchema = new Schema({
     required: [true, 'PLC version release is required']
   },
   input:{
-    type: ioSchema,
+    type: ioSchema('input'),
     default: ()=>({})
   },
   output:{
-    type: ioSchema,
+    type: ioSchema('output'),
     default: ()=>({})
   },
   createdAt:{

@@ -7,69 +7,69 @@ CASE 0 (CLP Register/Identification):
 
 const { flattenObj } = require('../utils/transform');
 const plcSrv = require('./plc');
+const arduinoTranslate = require('./arduinoTranslate');
+const {env} = require('../utils/env');
 
-const msgCode=Object.freeze({
+const msgCodes=Object.freeze({
   IDENTIFICATION: 0
 });
 
-const loggedClps = [];
+const onlinePlcs = []; //array of online PLC wsClients
 
-async function arduinoIdentification(data){
-  if(data.length<4) throw new Error('ERROR: Invalid version (Insufficient Bytes)');
-  else if(data.lenght<5) return new Error('ERROR: Invalid reference (Empty)');
+function isPlcOnline(plcRef){
+  return onlinePlcs.some(el => el.plcRef==plcRef);
+}
 
-  const release = `${data[1]}.${data[2]}.${data[3]}`;
-  const version = {release};
+function findPlcWsClient(plcRef){
+  return onlinePlcs.find(el => el.plcRef==plcRef);
+}
 
-  let reference = "";
-  for(let i=4;i<data.length;i++){
-    reference += data[i].toString(16).padStart(2, '0');
-  }
+async function arduinoLogin(wsClient, plc){
+  if(isPlcOnline(plc.reference)) throw new Error('PLC already online');
 
-  console.log('VERSION:');
-  console.log(version);
-  console.log(flattenObj(version));
-  console.log(`REFERENCE: ${reference}`);
+  if(!(await plcSrv.exists(plc.reference))) //is it a new PLC?
+    await plcSrv.create(reference, flattenObj(version)); //creating new PLC
 
-  if(await plcSrv.exists({reference})){
-    console.log('CLP JA CADASTRADO NO SISTEMA!');
-    return;
-  }
+  wsClient.plcRef = plc.reference; //PLC reference on wsClient
+  onlinePlcs.push(wsClient); //Saving online PLC
+}
+
+function wsSendMessageToPlc(plcRef, msg){
+  const wsClient = findPlcWsClient(plcRef);
+  wsClient.send(msg);
+}
+
+async function wsReceiveMessage(data){
+  if(!(data instanceof Buffer)) return this.send('ERROR: Non binary received');
+
+  if(data.length<1) return this.send('ERROR: Invalid Message (Empty)');
+  const code = data[0];
   
-  await plcSrv.create(reference, flattenObj(version));
-  console.log('NOVO CLP CADASTRADO NO SISTEMA');
-}
-
-async function arduinoMessage(data){
-  console.log('received: ');
-  console.log(data);
-
-  if(data instanceof Buffer){
-    console.log('IS BUFFER');
-
-    if(data.length<1) return this.send('ERROR: Invalid Message (Empty)');
-    
-    const code = data[0];
-    try{
-      switch(code){
-        case msgCode.IDENTIFICATION:
-          await arduinoIdentification(data);
-          const arr = new Uint8Array(3);
-          arr[0] = 34; arr[1] = 3; arr[2] = 27;
-          this.send(arr);
-          break;
-        default:
-          this.send('ERROR: Invalid Message Code');
-      }
-    } catch(err){
-      this.send(err.message);
+  try{
+    switch(code){
+      case msgCodes.IDENTIFICATION:
+        const plc = arduinoTranslate.arduinoDetails(data, 1);
+        await arduinoLogin(this, plc);
+        this.send('Successful login');
+        break;
+      default:
+        this.send('ERROR: Invalid Message Code');
     }
+  } catch(err){
+    const errMsg = `ERROR: ${err.message}`;
+    if(env.NODE_ENV=='development') console.log(errMsg);
+    this.send(errMsg);
   }
-  else this.send('ERROR: Non binary received');
 }
 
-function arduinoClose(){
+function wsClose(){
+  console.log('Online before: ');
+  console.log(onlinePlcs);
+  onlinePlcs.splice(onlinePlcs.findIndex(el => el.plcRef==this.plcRef), 1);
+  console.log('Online after: ');
+  console.log(onlinePlcs);
+
   console.log('Arduino graceful disconnect');
 }
 
-module.exports = {arduinoMessage, arduinoClose};
+module.exports = {msgCodes, isPlcOnline, wsSendMessageToPlc, wsReceiveMessage, wsClose};
