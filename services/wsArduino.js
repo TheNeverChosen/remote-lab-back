@@ -28,10 +28,12 @@ function findPlcWsClient(plcRef){
 async function arduinoLogin(wsClient, plc){
   if(isPlcOnline(plc.reference)) throw new Error('PLC already online');
 
-  if(!(await plcSrv.exists(plc.reference))) //is it a new PLC?
+  const {reference, version} = plc;
+
+  if(!(await plcSrv.exists({reference}))) //is it a new PLC?
     await plcSrv.create(reference, flattenObj(version)); //creating new PLC
 
-  wsClient.plcRef = plc.reference; //PLC reference on wsClient
+  wsClient.plcRef = reference; //PLC reference on wsClient
   onlinePlcs.push(wsClient); //Saving online PLC
 }
 
@@ -46,10 +48,14 @@ async function wsReceiveMessage(data){
   if(data.length<1) return this.send('ERROR: Invalid Message (Empty)');
   const code = data[0];
   
+  console.log(data.length);
+  console.log(data);
+
   try{
     switch(code){
       case msgCodes.IDENTIFICATION:
         const plc = arduinoTranslate.arduinoDetails(data, 1);
+        console.log(plc);
         await arduinoLogin(this, plc);
         console.log(onlinePlcs);
         this.send('Successful login');
@@ -58,7 +64,7 @@ async function wsReceiveMessage(data){
         this.send('ERROR: Invalid Message Code');
     }
   } catch(err){
-    const errMsg = `ERROR: ${err.message}`;
+    const errMsg = `${err.message}`;
     if(env.NODE_ENV=='development') console.log(errMsg);
     this.send(errMsg);
   }
