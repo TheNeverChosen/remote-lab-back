@@ -9,7 +9,7 @@ async function launchToArduino(plcFilter, clientProtocol){
 
   if(!wsArduinoSrv.isPlcOnline(plc.reference)) throw createError('Error: PLC is offline.');
 
-  const arduinoMsg = arduinoTranslate.clientToArduinoEmbed(plc.toObject(), clientProtocol, wsArduinoSrv.msgCodes.PROTOCOL);
+  const arduinoMsg = arduinoTranslate.clientToArduinoEmbed(plc.toObject(), clientProtocol, wsArduinoSrv.msgCodes.EMBED);
   wsArduinoSrv.wsSendMessageToPlc(plc.reference, arduinoMsg);
 }
 

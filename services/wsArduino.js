@@ -32,6 +32,9 @@ async function arduinoLogin(wsClient, plc){
 
 function wsSendMessageToPlc(plcRef, msg){
   const wsClient = findPlcWsClient(plcRef);
+  console.log(plcRef);
+  console.log(wsClient);
+  console.log(msg);
   wsClient.send(msg);
 }
 
