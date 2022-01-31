@@ -72,7 +72,7 @@ function parseVarIO_IN_AL_GEN(v){
   const qtDivs = extras.divs.length;
   res.push(...uintToArrayBytes(qtDivs, endianesses.LITTLE, 2));
   
-  const maxDiv=-1;
+  let maxDiv=-1;
   for(const div of extras.divs){
     if(checkDiv[div])
       throw createError(404, `ERROR: duplicate analog divisor (${div}) in variable ${id}`);
