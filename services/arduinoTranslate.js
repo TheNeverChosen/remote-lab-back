@@ -1,10 +1,12 @@
 const _sortedIndexBy = require('lodash/sortedIndexBy');
 const _has = require ('lodash/has');
-const {env, deviceModels, IOs, types, IOTypeModels} = require('../utils/env');
 const createError = require('http-errors');
-const {endianesses, uintToArrayBytes, binaryStrToBytes, intQtDigits} = require('../utils/transform');
+const {env, IOs, types, IOTypeModels, getIOTypeModel, diagElements} = require('../utils/env');
+const {diagSymbols, diagRelays} = diagElements;
+const {endianesses, uintToArrayBytes, binStrToArrayBytes, intQtDigits} = require('../utils/transform');
 
-function arduinoDetails(data, iStart){
+//==========From PLC to server==========
+function plcDetails(data, iStart){
   if(typeof iStart!='number') iStart=0;
   if(!(iStart+2<data.length)) throw createError(404, 'ERROR: Invalid version (Insufficient Bytes)');
   else if(!(iStart+3<data.length)) throw createError(404, 'ERROR: Invalid reference (Empty)');
@@ -18,23 +20,12 @@ function arduinoDetails(data, iStart){
 
   return {reference, version};
 }
+//======================================
 
-function getIOTypeModel(io, type, model){
-  try{
-    const ioType = deviceModels[io][type];
-    const i = ioType.models.indexOf(model);
-    if(!(i>=0 && i<ioType.models.length))
-      throw createError(404, `ERROR: \"${model}]\" is not a valid ${type} ${io} model`); 
-    return ioType.IOTypeModels[i];
-  } catch(err){
-    if(env.NODE_ENV=='development') console.log(err);
-    return null;
-  }
-}
-
+//==========From server to PLC==========
 function genDevWithVars(devices, devVars, qtVars){
   let totalDevices=0, totalDevVars=0;
-  const checkVars={};
+  const checkVarID={};
 
   for(const io of IOs){
     for(const type of types){
@@ -48,15 +39,15 @@ function genDevWithVars(devices, devVars, qtVars){
       
       for(const v of varArr){ //iterating over variables array
         if(!(v.id>=0 && v.id<qtVars)) throw createError(404, `invalid variable ID: expected variable id in [0,${qtVars-1}], but received ${v.id}, inside of ${type} ${io}.`);
-        if(checkVars[v.id]) throw createError(404, `ERROR: duplicated id (${v.id}).`);
-        else checkVars[v.id]=true;
+        if(checkVarID[v.id]) throw createError(404, `ERROR: duplicated id (${v.id}).`);
+        else checkVarID[v.id]=true;
 
         const iDev = _sortedIndexBy(deviceArr, v, (val)=>val.port); //searching for device on port
         if(!(iDev<deviceArr.length && deviceArr[iDev].port==v.port))
           throw createError(404, `ERROR: invalid ${type} ${io} port (${v.port}) in variable with id ${v.id}`);
 
         const dev = deviceArr[iDev]; //getting device on target port
-        if(!Array.isArray(dev.varArr)){ //first variable added
+        if(!dev.IOTypeModel || !Array.isArray(dev.varArr)){ //first variable added
           dev.IOTypeModel = getIOTypeModel(io, type, dev.model); //setting IOTypeModel
           dev.varArr = []; //creating variables array
           totalDevices++; //incrementing total os used devices
@@ -64,7 +55,7 @@ function genDevWithVars(devices, devVars, qtVars){
         dev.varArr.push(v); totalDevVars++;
       }
 
-      devices[io][type] = deviceArr.filter(dev=>Array.isArray(dev.varArr));
+      devices[io][type] = deviceArr.filter(dev=>(dev.IOTypeModel && Array.isArray(dev.varArr)));
     }
   }
 
@@ -81,15 +72,19 @@ function parseVarIO_IN_AL_GEN(v){
   const qtDivs = extras.divs.length;
   res.push(...uintToArrayBytes(qtDivs, endianesses.LITTLE, 2));
   
+  const maxDiv=-1;
   for(const div of extras.divs){
     if(checkDiv[div])
-      throw createError(404, `ERROR: duplicate analog divisor (${div}) in variable ${id}`)
+      throw createError(404, `ERROR: duplicate analog divisor (${div}) in variable ${id}`);
     else checkDiv[div]=true;
+    if(div<maxDiv)
+      throw createError(404, 'ERROR: divisor values must be in crescent order');
     res.push(...uintToArrayBytes(div, endianesses.LITTLE, 2));
+    maxDiv=div;
   }
 
-  res.push(...binaryStrToBytes(extras.zones));
-  res.push(...binaryStrToBytes(extras.dominances));
+  res.push(...binStrToArrayBytes(extras.zones));
+  res.push(...binStrToArrayBytes(extras.dominances));
 
   return res;
 }
@@ -121,21 +116,6 @@ function parseDevWithVars(devWithVars){
   
   return devVarArr;
 }
-
-const diagSymbols=Object.freeze({
-  '{': 1,
-  '}': 2,
-  '[': 3,
-  ']': 4,
-  '(': 5,
-  ')': 6
-});
-const diagRelays = Object.freeze({
-  'CA': 11,
-  'CF': 12,
-  'BA': 13,
-  'BF': 14
-});
 
 function parseDiagram(diagram, qtVars){
   if(typeof diagram!='string')
@@ -183,7 +163,7 @@ function parseDiagram(diagram, qtVars){
   return res;
 }
 
-function clientToArduinoProtocol(plc, clientProtocol, atStart){
+function clientToArduinoEmbed(plc, clientProtocol, atStart){
   if(Array.isArray(atStart))
     atStart = atStart.filter(val=>(typeof val == 'number'));
   else
@@ -198,7 +178,7 @@ function clientToArduinoProtocol(plc, clientProtocol, atStart){
   const devVarArr = parseDevWithVars(devWithVars);
   const parsedDiagram = parseDiagram(diagram, qtVars);
 
-  return {qtVars, totalDevVars, totalDevices, devWithVars, devVarArr, diagram, parsedDiagram, result:new Uint8Array([...atStart, totalDevices, qtVars, ...devVarArr, ...parsedDiagram])};
+  return new Uint8Array([...atStart, totalDevices, qtVars, ...devVarArr, ...parsedDiagram]);
 }
 
-module.exports = {arduinoDetails, clientToArduinoProtocol};
+module.exports = {plcDetails, clientToArduinoEmbed};

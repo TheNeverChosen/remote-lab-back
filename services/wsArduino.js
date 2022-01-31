@@ -1,18 +1,11 @@
-/*
-MsgCode (message type) -> 1 Byte
-
-CASE 0 (CLP Register/Identification):
-  version(3 bytes) reference(todo o resto)
-*/
-
 const { flattenObj } = require('../utils/transform');
 const plcSrv = require('./plc');
 const arduinoTranslate = require('./arduinoTranslate');
 const {env} = require('../utils/env');
 
 const msgCodes=Object.freeze({
-  IDENTIFICATION: 0,
-  PROTOCOL: 1
+  IDENTIFICATION: 0,  //PLC identification
+  EMBED: 1            //Ladder code Embed in PLC
 });
 
 const onlinePlcs = []; //array of online PLC wsClients
@@ -47,17 +40,12 @@ async function wsReceiveMessage(data){
 
   if(data.length<1) return this.send('ERROR: Invalid Message (Empty)');
   const code = data[0];
-  
-  console.log(data.length);
-  console.log(data);
 
   try{
     switch(code){
       case msgCodes.IDENTIFICATION:
-        const plc = arduinoTranslate.arduinoDetails(data, 1);
-        console.log(plc);
+        const plc = arduinoTranslate.plcDetails(data, 1);
         await arduinoLogin(this, plc);
-        console.log(onlinePlcs);
         this.send('Successful login');
         break;
       default:
@@ -71,13 +59,7 @@ async function wsReceiveMessage(data){
 }
 
 function wsClose(){
-  console.log('Online before: ');
-  console.log(onlinePlcs);
   onlinePlcs.splice(onlinePlcs.findIndex(el => el.plcRef==this.plcRef), 1);
-  console.log('Online after: ');
-  console.log(onlinePlcs);
-
-  console.log('Arduino graceful disconnect');
 }
 
 module.exports = {msgCodes, isPlcOnline, wsSendMessageToPlc, wsReceiveMessage, wsClose};

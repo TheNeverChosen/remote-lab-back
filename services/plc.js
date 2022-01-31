@@ -28,8 +28,6 @@ async function existsVersion(verFilter){
 async function create(reference, plcVerFilter){
   let plcVer = await plcVerSrv.readOne(plcVerFilter);
 
-  console.log('hello');
-
   if(!plcVer) throw createError(404, 'PLC version not found');
   else if(!(plcVer instanceof mongoose.Document)) throw (500, 'Unexpected error while searching PLC version');
   else plcVer = plcVer.toObject();

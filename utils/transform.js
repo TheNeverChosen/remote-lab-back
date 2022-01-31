@@ -1,8 +1,6 @@
 const _set = require('lodash/set');
 const _isEmpty = require('lodash/isEmpty');
 const {mongoose} = require('../loaders/mongo');
-const { isInteger } = require('lodash');
-const validator = require('validator');
 
 function flattenObj(ob) {
   if(ob instanceof mongoose.Document)
@@ -44,7 +42,7 @@ const endianesses=Object.freeze({
 });
 
 function uintToArrayBytes(x, endianess, fixedBytes){
-  if(typeof x!='number' || x<0 || !isInteger(x))
+  if(typeof x!='number' || x<0 || !Number.isInteger(x))
     return null;
 
   x = Math.abs(parseInt(x));
@@ -71,22 +69,27 @@ function uintToArrayBytes(x, endianess, fixedBytes){
   return arr;
 }
 
-function binaryStrToBytes(str){
+//Defaults: padLeft->undefined/false (padRight), endianess->BIG
+function binStrToArrayBytes(str, padLeft, endianess){
   if(typeof str!='string') return null; //not string
   str = str.replace(' ', '');
-  
+
   for(let c of str)
     if(!(c=='0' || c=='1')) return null; //not binary string
 
   const l = str.length;
   const mod = l%8;
-  if(mod!=0) str+='0'.repeat(8-mod);
+  if(mod!=0){
+    const pad = '0'.repeat(8-mod);
+    if(!padLeft) str += pad;
+    else str = pad + str;
+  }
 
-  return uintToArrayBytes(parseInt(str, 2), endianesses.BIG);
+  return uintToArrayBytes(parseInt(str, 2), endianess ? endianess : endianesses.BIG);
 }
 
 function intQtDigits(x, notCountMinus){
-  if(typeof x != 'number' || !isInteger(x)) return null;
+  if(typeof x != 'number' || !Number.isInteger(x)) return null;
   
   const plus = 1 + (x<0 && !notCountMinus) ? 1:0;
 
@@ -95,4 +98,4 @@ function intQtDigits(x, notCountMinus){
     : 0) + plus;
 }
 
-module.exports={flattenObj, expandObj, endianesses, uintToArrayBytes, binaryStrToBytes, intQtDigits};
+module.exports={flattenObj, expandObj, endianesses, uintToArrayBytes, binStrToArrayBytes, intQtDigits};
