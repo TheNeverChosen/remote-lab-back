@@ -12,14 +12,14 @@ async function getOnlinePlc(plcFilter){
 }
 
 async function launchToArduino(plcFilter, clientProtocol){
-  const plc = getOnlinePlc(plcFilter);
+  const plc = await getOnlinePlc(plcFilter);
 
   const arduinoMsg = arduinoTranslate.clientToArduinoEmbed(plc.toObject(), clientProtocol, wsArduinoSrv.msgCodes.EMBED);
   wsArduinoSrv.wsSendMessageToPlc(plc.reference, arduinoMsg);
 }
 
 async function controlArduino(plcFilter, control){
-  const plc = getOnlinePlc(plcFilter);
+  const plc = await getOnlinePlc(plcFilter);
   const arduinoMsg = arduinoTranslate.clientControlToArduino(control, wsArduinoSrv.msgCodes.CONTROL);
   wsArduinoSrv.wsSendMessageToPlc(plc.reference, arduinoMsg);
 }
