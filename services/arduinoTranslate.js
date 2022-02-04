@@ -177,8 +177,10 @@ function clientToArduinoEmbed(plc, clientProtocol, atStart){
   const {totalDevices, totalDevVars, devWithVars} = genDevWithVars(plc.devices, devVars, qtVars);
   const devVarArr = parseDevWithVars(devWithVars);
   const parsedDiagram = parseDiagram(diagram, qtVars);
+  const ptcSz = 2 + devVarArr.length + parsedDiagram.length;
 
-  return new Uint8Array([...atStart, totalDevices, qtVars, ...devVarArr, ...parsedDiagram]);
+  return new Uint8Array([...atStart, ...uintToArrayBytes(ptcSz, endianesses.LITTLE, 2),
+     totalDevices, qtVars, ...devVarArr, ...parsedDiagram]);
 }
 
 module.exports = {plcDetails, clientToArduinoEmbed};
