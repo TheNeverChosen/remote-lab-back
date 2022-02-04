@@ -6,4 +6,10 @@ async function launchToArduino(req, res){
   res.status(200).json(msg);
 }
 
-module.exports = {launchToArduino};
+async function controlArduino(req, res){
+  const plcFilter = req.query, {control}=req.body;
+  plcProgSrv.controlArduino(plcFilter, control)
+  res.status(204).end();
+}
+
+module.exports = {launchToArduino, controlArduino};

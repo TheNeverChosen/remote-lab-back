@@ -163,11 +163,16 @@ function parseDiagram(diagram, qtVars){
   return res;
 }
 
-function clientToArduinoEmbed(plc, clientProtocol, atStart){
+function handleAtStart(atStart){
   if(Array.isArray(atStart))
     atStart = atStart.filter(val=>(typeof val == 'number'));
   else
     atStart = (typeof atStart=='number') ? [atStart] : [];
+  return atStart;
+}
+
+function clientToArduinoEmbed(plc, clientProtocol, atStart){
+  atStart = handleAtStart;
 
   const {qtVars, devVars, diagram} = clientProtocol;
 
@@ -183,4 +188,23 @@ function clientToArduinoEmbed(plc, clientProtocol, atStart){
      totalDevices, qtVars, ...devVarArr, ...parsedDiagram]);
 }
 
-module.exports = {plcDetails, clientToArduinoEmbed};
+const controls=Object.freeze({
+  PAUSE: 0,
+  RESUME: 1,
+  RESET: 2
+});
+function clientControlToArduino(control, atStart){
+  if(typeof control=='string') control=controls[control.trim().toUpperCase()];
+  else if(typeof control=='number')
+    if(!(Number.isInteger(control) && Object.values(controls).indexOf(control)!=-1))
+      control=undefined;
+  else control=undefined;
+
+  atStart = handleAtStart(atStart);
+
+  if(!control) throw createError(404, 'ERROR: Invalid Control Command.');
+
+  return new Uint8Array([...atStart, control]);
+}
+
+module.exports = {plcDetails, clientToArduinoEmbed, clientControlToArduino};

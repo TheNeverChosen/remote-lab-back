@@ -5,7 +5,8 @@ const {env} = require('../utils/env');
 
 const msgCodes=Object.freeze({
   IDENTIFICATION: 0,  //PLC identification
-  EMBED: 1            //Ladder code Embed in PLC
+  EMBED: 1,           //Ladder code Embed in PLC
+  CONTROL: 2          //Control PLC
 });
 
 const onlinePlcs = []; //array of online PLC wsClients
