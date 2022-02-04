@@ -172,7 +172,7 @@ function handleAtStart(atStart){
 }
 
 function clientToArduinoEmbed(plc, clientProtocol, atStart){
-  atStart = handleAtStart;
+  atStart = handleAtStart(atStart);
 
   const {qtVars, devVars, diagram} = clientProtocol;
 
