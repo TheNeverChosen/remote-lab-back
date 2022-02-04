@@ -8,7 +8,7 @@ async function launchToArduino(req, res){
 
 async function controlArduino(req, res){
   const plcFilter = req.query, {control}=req.body;
-  plcProgSrv.controlArduino(plcFilter, control)
+  await plcProgSrv.controlArduino(plcFilter, control)
   res.status(204).end();
 }
 

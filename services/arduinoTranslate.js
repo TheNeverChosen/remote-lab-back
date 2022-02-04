@@ -202,7 +202,8 @@ function clientControlToArduino(control, atStart){
 
   atStart = handleAtStart(atStart);
 
-  if(!control) throw createError(404, 'ERROR: Invalid Control Command.');
+  console.log(control);
+  if(!control) throw createError(400, 'ERROR: Invalid Control Command.');
 
   return new Uint8Array([...atStart, control]);
 }
